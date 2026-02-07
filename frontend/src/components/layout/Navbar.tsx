@@ -13,13 +13,6 @@ import { useAuth } from "@/providers/AuthProvider";
 import LoginButton from "@/components/auth/LoginButton";
 import UserMenu from "@/components/auth/UserMenu";
 
-type NavItem = {
-  label: string;
-  href: string;
-};
-
-const primaryNav: NavItem[] = [];
-
 export function Navbar() {
   const { items } = useCart();
   const { theme } = useTheme();
@@ -43,55 +36,61 @@ export function Navbar() {
   }));
 
   return (
-    <header className="sticky top-0 z-50 bg-background/80 border-b">
-      <div className="max-w-7xl mx-auto px-2">
-        <div className="h-14 flex items-center justify-between">
-          {/* Left: Mobile menu + Brand */}
-          <div className="flex items-center gap-1">
-            <div className="md:hidden">
-              <MobileMenu logoSrc={logoSrc} />
-            </div>
-            <NavLink
-              to="/"
-              aria-label={`${brandConfig.brandName} Home`}
-              className="block">
-              <img
-                src={logoSrc}
-                alt={brandConfig.brandName}
-                className="h-16 w-auto"
-              />
-            </NavLink>
-          </div>
+    <header className="sticky top-0 z-40 bg-background border-b shadow-sm">
+      <nav
+        className="flex items-center justify-between max-w-4xl mx-auto px-4 py-3"
+        aria-label="Main navigation">
+        {/* Brand Logo */}
+        <NavLink
+          to="/"
+          aria-label={`${brandConfig.brandName} Home`}
+          className="flex items-center gap-2">
+          <img
+            src={logoSrc}
+            alt={brandConfig.brandName}
+            className="h-16 w-auto"
+          />
+        </NavLink>
 
-          {/* Center: Primary navigation (desktop) */}
-          <nav className="hidden md:flex items-center gap-4">
-            {primaryNav.map((item) => (
-              <NavLink
-                key={item.label}
-                to={item.href}
-                className={({ isActive }) =>
-                  `text-xs font-normal transition-colors ${
-                    isActive
-                      ? "text-foreground"
-                      : "text-foreground/70 hover:text-foreground"
-                  }`
-                }>
-                {item.label}
-              </NavLink>
-            ))}
-          </nav>
+        {/* Minimal Navigation Links */}
+        <div className="hidden md:flex items-center gap-6">
+          <NavLink
+            to="/shop"
+            className={({ isActive }) =>
+              `text-sm font-medium ${isActive ? "text-primary" : "text-foreground/70 hover:text-primary"}`
+            }>
+            Shop
+          </NavLink>
+          <NavLink
+            to="/about"
+            className={({ isActive }) =>
+              `text-sm font-medium ${isActive ? "text-primary" : "text-foreground/70 hover:text-primary"}`
+            }>
+            About
+          </NavLink>
+          <NavLink
+            to="/contact"
+            className={({ isActive }) =>
+              `text-sm font-medium ${isActive ? "text-primary" : "text-foreground/70 hover:text-primary"}`
+            }>
+            Contact
+          </NavLink>
+        </div>
 
-          {/* Right: Actions */}
-          <div className="flex items-center gap-1">
-            <AnimatedThemeToggler
-              className="rounded-full p-1 text-foreground/80"
-              aria-label="Toggle theme"
-            />
-            {isLoggedIn ? <UserMenu /> : <LoginButton label="Login" />}
-            <CartDialog items={drawerItems} />
+        {/* Actions */}
+        <div className="flex items-center gap-2">
+          <AnimatedThemeToggler
+            className="rounded-full p-1 text-foreground/80"
+            aria-label="Toggle theme"
+          />
+          {isLoggedIn ? <UserMenu /> : <LoginButton label="Login" />}
+          <CartDialog items={drawerItems} />
+          {/* Mobile menu trigger */}
+          <div className="md:hidden">
+            <MobileMenu logoSrc={logoSrc} />
           </div>
         </div>
-      </div>
+      </nav>
     </header>
   );
 }
@@ -155,7 +154,7 @@ function MobileMenu({ logoSrc }: { logoSrc: string }) {
             <img
               src={logoSrc}
               alt={brandConfig.brandName}
-              className="h-8 w-auto"
+              className="h-16 w-auto"
             />
           </NavLink>
 
