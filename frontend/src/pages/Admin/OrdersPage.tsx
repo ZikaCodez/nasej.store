@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import OrderCard from "./components/Orders/OrderCard";
+import OrderCard from "@/components/admin/Orders/OrderCard";
 import type { Order } from "@/types/order";
 import api from "@/lib/api";
 import AdminLayout from "@/pages/Admin/AdminLayout";
@@ -27,7 +27,7 @@ import {
   Inbox,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import StatsCard from "./components/Overview/StatsCard";
+import StatsCard from "@/components/admin/Overview/StatsCard";
 
 const STATUS_PRIORITY: Record<string, number> = {
   "return-request": 0,

@@ -1,16 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import AdminLayout from "@/pages/Admin/AdminLayout";
-import ProductsTable from "@/pages/Admin/components/Products/ProductsTable";
+import ProductsTable from "@/components/admin/Products/ProductsTable";
 import ProductFilters, {
   type ProductsFilterValue,
-} from "@/pages/Admin/components/Products/ProductFilters";
+} from "@/components/admin/Products/ProductFilters";
 import ProductForm, {
   type ProductFormState,
-} from "@/pages/Admin/components/Products/ProductForm";
-import ManageCategoriesDialog from "@/pages/Admin/components/Products/ManageCategoriesDialog";
-import ManageOffersDialog from "@/pages/Admin/components/Products/ManageOffersDialog";
-import ShippingManagerDialog from "@/pages/Admin/components/Shipping/ShippingManagerDialog";
-import CreateColorDialog from "@/pages/Admin/components/Products/CreateColorDialog";
+} from "@/components/admin/Products/ProductForm";
+import ManageCategoriesDialog from "@/components/admin/Products/ManageCategoriesDialog";
+import ManageOffersDialog from "@/components/admin/Products/ManageOffersDialog";
+import ShippingManagerDialog from "@/components/admin/Shipping/ShippingManagerDialog";
+import CreateColorDialog from "@/components/admin/Products/CreateColorDialog";
 import type { ProductListItem } from "@/types/product";
 import type { Category } from "@/types/category";
 import type { Color } from "@/types/color";

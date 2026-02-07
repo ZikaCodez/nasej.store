@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import AdminLayout from "@/pages/Admin/AdminLayout";
-import StatsCard from "@/pages/Admin/components/Overview/StatsCard";
-import SalesChart from "@/pages/Admin/components/Overview/SalesChart";
-import TopProductCard from "@/pages/Admin/components/Overview/TopProductCard";
+import StatsCard from "@/components/admin/Overview/StatsCard";
+import SalesChart from "@/components/admin/Overview/SalesChart";
+import TopProductCard from "@/components/admin/Overview/TopProductCard";
 import api from "@/lib/api";
 import type { Order } from "@/types/order";
 import { Button } from "@/components/ui/button";

@@ -17,7 +17,7 @@ import type { Order } from "@/types/order";
 import { Calendar, Loader2, PoundSterling, ShoppingBag } from "lucide-react";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import type { DateRange } from "react-day-picker";
-import { DatePickerWithRange } from "@/pages/Admin/components/Overview/DatePickerWithRange";
+import { DatePickerWithRange } from "@/components/admin/Overview/DatePickerWithRange";
 
 type ListResponse<T> = {
   items: T[];

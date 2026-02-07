@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import AdminLayout from "@/pages/Admin/AdminLayout";
 import api from "@/lib/api";
 import { Loader2, RefreshCw } from "lucide-react";
-import UserCard from "./components/Users/UserCard";
+import UserCard from "@/components/admin/Users/UserCard";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
