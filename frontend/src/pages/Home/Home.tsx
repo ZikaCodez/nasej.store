@@ -4,7 +4,7 @@ import SectionHeader from "@/components/common/SectionHeader";
 import ProductCard from "@/components/product/ProductCard";
 import CategoryCard from "@/components/category/CategoryCard";
 import { Button } from "@/components/ui/button";
-import { Meteors } from "@/components/ui/meteors";
+import { Particles } from "@/components/ui/particles";
 import { AnimatedShinyText } from "@/components/ui/animated-shiny-text";
 import { useTheme } from "@/providers/ThemeProvider";
 import api from "@/lib/api";
@@ -24,7 +24,6 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from "@/components/ui/carousel";
-
 import brandConfig from "@/brand-config.json";
 
 type Variant = {
@@ -39,7 +38,7 @@ type Product = {
   slug: string;
   description?: string;
   basePrice: number;
-  category: number; // category id
+  category: number;
   variants?: Variant[];
   createdAt?: string | Date;
   discount?: any;
@@ -68,7 +67,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Static SEO + OG for Home
+  // SEO + OG tags
   useEffect(() => {
     const title = `${brandConfig.brandName} – Premium Local Clothing`;
     const description = `Premium local clothing crafted in Egypt. Discover essentials and seasonal highlights from ${brandConfig.brandName}.`;
@@ -98,32 +97,22 @@ export default function Home() {
       name: "description",
     });
     desc.content = description;
-    const ogTitle = ensureMeta('meta[property="og:title"]', {
-      setAttribute: "property",
-    } as any);
+    const ogTitle = ensureMeta('meta[property="og:title"]', {});
     ogTitle.setAttribute("property", "og:title");
     ogTitle.setAttribute("content", title);
-    const ogDesc = ensureMeta('meta[property="og:description"]', {
-      setAttribute: "property",
-    } as any);
+    const ogDesc = ensureMeta('meta[property="og:description"]', {});
     ogDesc.setAttribute("property", "og:description");
     ogDesc.setAttribute("content", description);
-    const ogImage = ensureMeta('meta[property="og:image"]', {
-      setAttribute: "property",
-    } as any);
+    const ogImage = ensureMeta('meta[property="og:image"]', {});
     ogImage.setAttribute("property", "og:image");
     ogImage.setAttribute("content", image);
-    const ogType = ensureMeta('meta[property="og:type"]', {
-      setAttribute: "property",
-    } as any);
+    const ogType = ensureMeta('meta[property="og:type"]', {});
     ogType.setAttribute("property", "og:type");
     ogType.setAttribute("content", "website");
-    const ogUrl = ensureMeta('meta[property="og:url"]', {
-      setAttribute: "property",
-    } as any);
+    const ogUrl = ensureMeta('meta[property="og:url"]', {});
     ogUrl.setAttribute("property", "og:url");
     if (url) ogUrl.setAttribute("content", url);
-  }, []);
+  }, [theme]);
 
   useEffect(() => {
     async function load() {
@@ -177,18 +166,16 @@ export default function Home() {
     load();
   }, []);
 
-  // Autoplay New Arrivals carousel when more than 3 items
   useEffect(() => {
     if (!newArrivalsApi || products.length <= 3) return;
     const interval = setInterval(() => {
       if (!newArrivalsPaused) {
         newArrivalsApi.scrollNext();
       }
-    }, 4500); // Slightly different timing than featured for variety
+    }, 4500);
     return () => clearInterval(interval);
   }, [newArrivalsApi, newArrivalsPaused, products.length]);
 
-  // Autoplay Featured carousel when more than 3 items
   useEffect(() => {
     if (!featApi || featured.length <= 3) return;
     const interval = setInterval(() => {
@@ -223,63 +210,53 @@ export default function Home() {
   }, [products, categories, navigate]);
 
   return (
-    <div className="space-y-10">
-      {/* Hero */}
-      <section className="relative overflow-hidden rounded-3xl border bg-slate-50 dark:bg-slate-950 px-6 py-20 md:py-32 flex flex-col items-center justify-center text-center transition-colors duration-300">
-        <Meteors number={30} className="opacity-50 dark:opacity-100" />
-
-        <div className="relative z-10 max-w-3xl mx-auto">
-          <div className="inline-flex items-center rounded-full border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-3 py-1 text-xs md:text-sm font-medium backdrop-blur-sm mb-6">
+    <div className="space-y-20">
+      {/* HERO */}
+      <section className="relative rounded-[2.5rem] border bg-linear-to-br from-primary/5 via-background to-secondary/10 shadow-xl px-8 py-24 md:py-36 flex flex-col items-center justify-center text-center overflow-hidden">
+        <Particles
+          quantity={80}
+          staticity={60}
+          size={1}
+          color="#a5b4fc"
+          className="absolute inset-0 z-0"
+        />
+        <div className="relative z-10 max-w-3xl mx-auto flex flex-col items-center">
+          <div className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-4 py-1 text-sm font-semibold mb-8 shadow-sm">
             <span className="flex h-2 w-2 rounded-full bg-primary mr-2" />
-            <AnimatedShinyText className="inline-flex items-center justify-center transition-all ease-in hover:text-slate-800 dark:hover:text-neutral-300">
-              <span>New Season Collection is Live</span>
+            <AnimatedShinyText className="inline-flex items-center justify-center">
+              <span>Welcome to {brandConfig.brandName}</span>
             </AnimatedShinyText>
           </div>
-
-          <h1 className="text-4xl md:text-7xl font-bold tracking-tight text-slate-900 dark:text-white">
-            Elevate Your <span className="text-primary italic">Essential</span>{" "}
-            Style With{" "}
-            <img
-              src={
-                theme === "dark" ? brandConfig.logoDark : brandConfig.logoLight
-              }
-              alt={brandConfig.brandName}
-              className="inline-block h-20 md:h-50 hover:scale-105 transition-transform"
-            />
+          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-foreground drop-shadow-lg">
+            <span className="text-primary">{brandConfig.brandName}</span> Casual Wear
           </h1>
-
-          <p className="text-base md:text-xl text-slate-600 dark:text-white/60 mb-10 max-w-2xl mx-auto leading-relaxed">
-            Premium local clothing crafted in Egypt. Discover the perfect blend
-            of comfort, quality, and timeless design.
+          <p className="text-lg md:text-2xl text-muted-foreground mt-6 mb-10 max-w-2xl mx-auto">
+            Discover comfort, quality, and timeless design. Crafted in Egypt for
+            your everyday essentials.
           </p>
-
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button
               size="lg"
-              className="w-full sm:w-auto rounded-full px-10 py-6 text-base font-bold shadow-sm cursor-pointer"
+              className="w-full sm:w-auto rounded-full px-10 py-6 text-base font-bold shadow-md"
               onClick={() => navigate("/shop")}>
-              <ShoppingBag /> Shop All Items
+              <ShoppingBag className="mr-2" /> Shop Now
             </Button>
             {cards.length > 0 && (
               <Button
                 variant="outline"
                 size="lg"
-                className="w-full sm:w-auto rounded-full px-10 py-6 text-base border-slate-200 dark:border-white/20 text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-white/10 transition-all cursor-pointer"
+                className="w-full sm:w-auto rounded-full px-10 py-6 text-base border-primary/30 text-foreground hover:bg-primary/10 shadow-md"
                 onClick={() =>
                   newArrivalsRef.current?.scrollIntoView({ behavior: "smooth" })
                 }>
-                <Telescope /> Explore New Drops
+                <Telescope className="mr-2" /> New Arrivals
               </Button>
             )}
           </div>
         </div>
-
-        {/* Decorative elements */}
-        <div className="absolute top-0 left-1/4 w-64 h-64 bg-primary/10 dark:bg-primary/20 rounded-full blur-[120px] z-0 pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-[120px] z-0 pointer-events-none" />
       </section>
 
-      {/* Shop by Category */}
+      {/* CATEGORIES */}
       {(loading || categories.length > 0) && (
         <section>
           <SectionHeader
@@ -287,25 +264,23 @@ export default function Home() {
             description="Find your style across our collections."
             align="center"
           />
-          <div className="mt-6">
+          <div className="mt-8">
             {loading && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {Array.from({ length: 3 }).map((_, idx) => (
                   <CategoryCard key={`cat-skeleton-${idx}`} loading={true} />
                 ))}
               </div>
             )}
-
             {error && <div className="text-center text-red-500">{error}</div>}
-
             {!loading && !error && categories.length > 0 && (
               <div
                 className={
                   categories.length === 1
-                    ? "grid grid-cols-1 gap-4 max-w-sm mx-auto"
+                    ? "grid grid-cols-1 gap-6 max-w-sm mx-auto"
                     : categories.length === 2
-                      ? "grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto"
-                      : "grid grid-cols-2 md:grid-cols-3 gap-4"
+                      ? "grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto"
+                      : "grid grid-cols-2 md:grid-cols-3 gap-6"
                 }>
                 {categories.map((c) => (
                   <CategoryCard
@@ -324,7 +299,7 @@ export default function Home() {
         </section>
       )}
 
-      {/* Recent Products (Grid) */}
+      {/* NEW ARRIVALS */}
       <section ref={newArrivalsRef} className="scroll-mt-20">
         {(loading || cards.length > 0) && (
           <>
@@ -333,9 +308,9 @@ export default function Home() {
               description="Freshly added pieces — explore the latest drops."
               align="center"
             />
-            <div className="mt-6">
+            <div className="mt-8">
               {loading && (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {Array.from({ length: 3 }).map((_, idx) => (
                     <ProductCard key={`skeleton-${idx}`} loading />
                   ))}
@@ -343,103 +318,89 @@ export default function Home() {
               )}
               {error && <div className="text-center text-red-500">{error}</div>}
               {!loading && !error && cards.length > 0 && (
-                <>
-                  <Carousel
-                    opts={{ align: "start", loop: true }}
-                    setApi={setNewArrivalsApi}
-                    onMouseEnter={() => setNewArrivalsPaused(true)}
-                    onMouseLeave={() => setNewArrivalsPaused(false)}>
-                    <CarouselContent
-                      className={cards.length < 3 ? "justify-center" : ""}>
-                      {cards.map((c) => (
-                        <CarouselItem
-                          key={`arrival-${c.key}`}
-                          className="basis-full md:basis-1/3">
-                          <ProductCard
-                            productId={c.productId}
-                            slug={c.slug}
-                            sku={c.sku}
-                            title={c.title}
-                            price={c.price}
-                            image={c.image}
-                            categoryId={c.categoryId}
-                            variants={c.variants}
-                            basePrice={c.basePrice}
-                            discount={c.discount}
-                            onQuickAdd={c.onQuickAdd}
-                          />
-                        </CarouselItem>
-                      ))}
-                    </CarouselContent>
-                    <CarouselPrevious
-                      className={`hidden ${cards.length > 3 ? "md:flex" : cards.length > 2 ? "flex" : ""} -left-4 bg-secondary hover:bg-primary`}
-                    />
-                    <CarouselNext
-                      className={`hidden ${cards.length > 3 ? "md:flex" : cards.length > 2 ? "flex" : ""} -right-4 bg-secondary hover:bg-primary`}
-                    />
-                  </Carousel>
-                </>
+                <Carousel
+                  opts={{ align: "start", loop: true }}
+                  setApi={setNewArrivalsApi}
+                  onMouseEnter={() => setNewArrivalsPaused(true)}
+                  onMouseLeave={() => setNewArrivalsPaused(false)}>
+                  <CarouselContent
+                    className={cards.length < 3 ? "justify-center" : ""}>
+                    {cards.map((c) => (
+                      <CarouselItem
+                        key={`arrival-${c.key}`}
+                        className="basis-full md:basis-1/3">
+                        <ProductCard {...c} />
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselPrevious
+                    className={`hidden ${cards.length > 3 ? "md:flex" : cards.length > 2 ? "flex" : ""} -left-4 bg-secondary hover:bg-primary`}
+                  />
+                  <CarouselNext
+                    className={`hidden ${cards.length > 3 ? "md:flex" : cards.length > 2 ? "flex" : ""} -right-4 bg-secondary hover:bg-primary`}
+                  />
+                </Carousel>
               )}
             </div>
           </>
         )}
       </section>
 
-      {/* Benefits */}
+      {/* BENEFITS */}
       <section className="container mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="flex items-start gap-3 rounded-2xl border p-4 hover:shadow-sm transition-shadow">
-            <div className="mt-0.5 inline-flex items-center justify-center rounded-full bg-primary/10 text-primary size-10">
-              <Truck className="size-5" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="flex items-start gap-4 rounded-3xl border bg-background/80 p-6 shadow-sm hover:shadow-lg transition-shadow">
+            <div className="inline-flex items-center justify-center rounded-full bg-primary/10 text-primary size-12">
+              <Truck className="size-6" />
             </div>
             <div>
-              <div className="text-base font-semibold">Fast Delivery</div>
-              <div className="text-xs md:text-sm text-muted-foreground">
+              <div className="text-lg font-bold">Fast Delivery</div>
+              <div className="text-sm text-muted-foreground">
                 Nationwide in 3–7 business days
               </div>
             </div>
           </div>
-          <div className="flex items-start gap-3 rounded-2xl border p-4 hover:shadow-sm transition-shadow">
-            <div className="mt-0.5 inline-flex items-center justify-center rounded-full bg-primary/10 text-primary size-10">
-              <ShieldCheck className="size-5" />
+          <div className="flex items-start gap-4 rounded-3xl border bg-background/80 p-6 shadow-sm hover:shadow-lg transition-shadow">
+            <div className="inline-flex items-center justify-center rounded-full bg-primary/10 text-primary size-12">
+              <ShieldCheck className="size-6" />
             </div>
             <div>
-              <div className="text-base font-semibold">Premium Quality</div>
-              <div className="text-xs md:text-sm text-muted-foreground">
+              <div className="text-lg font-bold">Premium Quality</div>
+              <div className="text-sm text-muted-foreground">
                 Locally crafted fabrics & finishes
               </div>
             </div>
           </div>
-          <div className="flex items-start gap-3 rounded-2xl border p-4 hover:shadow-sm transition-shadow">
-            <div className="mt-0.5 inline-flex items-center justify-center rounded-full bg-primary/10 text-primary size-10">
-              <RefreshCw className="size-5" />
+          <div className="flex items-start gap-4 rounded-3xl border bg-background/80 p-6 shadow-sm hover:shadow-lg transition-shadow">
+            <div className="inline-flex items-center justify-center rounded-full bg-primary/10 text-primary size-12">
+              <RefreshCw className="size-6" />
             </div>
             <div>
-              <div className="text-base font-semibold">7‑Day Returns</div>
-              <div className="text-xs md:text-sm text-muted-foreground">
+              <div className="text-lg font-bold">7‑Day Returns</div>
+              <div className="text-sm text-muted-foreground">
                 First 2 days hassle‑free, full 7 days for defects
               </div>
             </div>
           </div>
-          <div className="flex items-start gap-3 rounded-2xl border p-4 hover:shadow-sm transition-shadow">
-            <div className="mt-0.5 inline-flex items-center justify-center rounded-full bg-primary/10 text-primary size-10">
-              <HandCoins className="size-5" />
+          <div className="flex items-start gap-4 rounded-3xl border bg-background/80 p-6 shadow-sm hover:shadow-lg transition-shadow">
+            <div className="inline-flex items-center justify-center rounded-full bg-primary/10 text-primary size-12">
+              <HandCoins className="size-6" />
             </div>
             <div>
-              <div className="text-base font-semibold">Cash on Delivery</div>
-              <div className="text-xs md:text-sm text-muted-foreground">
+              <div className="text-lg font-bold">Cash on Delivery</div>
+              <div className="text-sm text-muted-foreground">
                 Pay safely on arrival
               </div>
             </div>
           </div>
         </div>
-        <p className="mt-3 text-xs md:text-sm text-muted-foreground text-center max-w-3xl mx-auto">
+        <p className="mt-6 text-sm text-muted-foreground text-center max-w-3xl mx-auto">
           We’re committed to a premium, worry‑free experience from checkout to
           your doorstep — with quality you can feel and service you can trust.
         </p>
       </section>
 
-      {/* Featured Picks */}
+      {/* FEATURED PICKS */}
       <section>
         {(loading || featured.length > 0) && (
           <SectionHeader
@@ -449,15 +410,14 @@ export default function Home() {
           />
         )}
         {error && <div className="text-center text-red-500">{error}</div>}
-        <div className="mt-6">
+        <div className="mt-8">
           {loading && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {Array.from({ length: 3 }).map((_, idx) => (
                 <ProductCard key={`feat-skeleton-${idx}`} loading />
               ))}
             </div>
           )}
-
           {!loading && !error && featured.length > 0 && (
             <>
               {featured.length > 3 ? (
@@ -476,7 +436,7 @@ export default function Home() {
                       return (
                         <CarouselItem
                           key={`feat-${p._id}`}
-                          className={`basis-full md:basis-1/3`}>
+                          className="basis-full md:basis-1/3">
                           <ProductCard
                             productId={p._id}
                             slug={p.slug}
@@ -506,10 +466,10 @@ export default function Home() {
                 <div
                   className={
                     featured.length === 1
-                      ? "grid grid-cols-1 gap-4 max-w-sm mx-auto"
+                      ? "grid grid-cols-1 gap-6 max-w-sm mx-auto"
                       : featured.length === 2
-                        ? "grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto"
-                        : "grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto"
+                        ? "grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto"
+                        : "grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto"
                   }>
                   {featured.map((p) => {
                     const firstImage = p.variants?.[0]?.images?.[0];
@@ -540,6 +500,7 @@ export default function Home() {
           )}
         </div>
       </section>
+
       {/* Structured Data for Featured Products */}
       {featured.length > 0 && (
         <script
@@ -573,19 +534,19 @@ export default function Home() {
         />
       )}
 
-      {/* Brand Story CTA */}
-      <section className="rounded-2xl border p-6 md:p-8 text-center">
-        <h3 className="text-xl md:text-2xl font-semibold">
+      {/* BRAND STORY CTA */}
+      <section className="rounded-3xl border bg-background/80 p-10 md:p-16 text-center shadow-lg">
+        <h3 className="text-2xl md:text-3xl font-extrabold mb-2">
           Crafted for Everyday Comfort
         </h3>
-        <p className="mt-2 text-sm text-muted-foreground max-w-2xl mx-auto">
+        <p className="mt-2 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
           Inspired by local culture and modern minimalism. We obsess over fit,
           fabric, and finish so you don’t have to.
         </p>
-        <div className="mt-4">
+        <div className="mt-6">
           <Button
-            className="rounded-full"
-            size="sm"
+            className="rounded-full px-8 py-4 text-base font-semibold shadow-md"
+            size="lg"
             onClick={() => navigate("/shop")}>
             Explore the Collection
           </Button>

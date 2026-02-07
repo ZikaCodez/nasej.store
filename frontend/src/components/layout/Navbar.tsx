@@ -36,50 +36,50 @@ export function Navbar() {
   }));
 
   return (
-    <header className="sticky top-0 z-40 bg-background border-b shadow-sm">
+    <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/40 shadow-lg rounded-b-2xl">
       <nav
-        className="flex items-center justify-between max-w-4xl mx-auto px-4 py-3"
+        className="flex items-center justify-between max-w-5xl mx-auto px-6 py-4 gap-4"
         aria-label="Main navigation">
         {/* Brand Logo */}
         <NavLink
           to="/"
           aria-label={`${brandConfig.brandName} Home`}
-          className="flex items-center gap-2">
+          className="flex items-center gap-3">
           <img
             src={logoSrc}
             alt={brandConfig.brandName}
-            className="h-16 w-auto"
+            className="h-14 w-auto drop-shadow-md rounded-xl"
           />
         </NavLink>
 
-        {/* Minimal Navigation Links */}
-        <div className="hidden md:flex items-center gap-6">
+        {/* Modern Navigation Links */}
+        <div className="hidden md:flex items-center gap-8">
           <a
             href="/faq"
-            className="text-sm text-foreground/70 hover:text-primary">
+            className="text-base font-medium text-foreground/80 hover:text-primary transition-colors px-2 py-1 rounded-lg hover:bg-primary/10">
             FAQ
           </a>
           <a
             href="/returns-policy"
-            className="text-sm text-foreground/70 hover:text-primary">
+            className="text-base font-medium text-foreground/80 hover:text-primary transition-colors px-2 py-1 rounded-lg hover:bg-primary/10">
             Returns Policy
           </a>
           <a
             href="/terms"
-            className="text-sm text-foreground/70 hover:text-primary">
+            className="text-base font-medium text-foreground/80 hover:text-primary transition-colors px-2 py-1 rounded-lg hover:bg-primary/10">
             Terms
           </a>
           <a
             href="/privacy"
-            className="text-sm text-foreground/70 hover:text-primary">
+            className="text-base font-medium text-foreground/80 hover:text-primary transition-colors px-2 py-1 rounded-lg hover:bg-primary/10">
             Privacy
           </a>
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <AnimatedThemeToggler
-            className="rounded-full p-1 text-foreground/80"
+            className="rounded-full p-1 text-foreground/80 hover:bg-primary/10 transition-colors"
             aria-label="Toggle theme"
           />
           {isLoggedIn ? <UserMenu /> : <LoginButton label="Login" />}
