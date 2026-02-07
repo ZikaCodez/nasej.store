@@ -58,7 +58,7 @@ export function Navbar() {
               <img
                 src={logoSrc}
                 alt={brandConfig.brandName}
-                className="h-8 w-auto"
+                className="h-16 w-auto"
               />
             </NavLink>
           </div>
