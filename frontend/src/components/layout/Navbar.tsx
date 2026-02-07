@@ -54,27 +54,26 @@ export function Navbar() {
 
         {/* Minimal Navigation Links */}
         <div className="hidden md:flex items-center gap-6">
-          <NavLink
-            to="/shop"
-            className={({ isActive }) =>
-              `text-sm font-medium ${isActive ? "text-primary" : "text-foreground/70 hover:text-primary"}`
-            }>
-            Shop
-          </NavLink>
-          <NavLink
-            to="/about"
-            className={({ isActive }) =>
-              `text-sm font-medium ${isActive ? "text-primary" : "text-foreground/70 hover:text-primary"}`
-            }>
-            About
-          </NavLink>
-          <NavLink
-            to="/contact"
-            className={({ isActive }) =>
-              `text-sm font-medium ${isActive ? "text-primary" : "text-foreground/70 hover:text-primary"}`
-            }>
-            Contact
-          </NavLink>
+          <a
+            href="/faq"
+            className="text-sm text-foreground/70 hover:text-primary">
+            FAQ
+          </a>
+          <a
+            href="/returns-policy"
+            className="text-sm text-foreground/70 hover:text-primary">
+            Returns Policy
+          </a>
+          <a
+            href="/terms"
+            className="text-sm text-foreground/70 hover:text-primary">
+            Terms
+          </a>
+          <a
+            href="/privacy"
+            className="text-sm text-foreground/70 hover:text-primary">
+            Privacy
+          </a>
         </div>
 
         {/* Actions */}
