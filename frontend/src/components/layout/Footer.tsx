@@ -9,11 +9,11 @@ export default function Footer() {
   const logoSrc =
     theme === "dark" ? brandConfig.logoDark : brandConfig.logoLight;
   return (
-    <footer className="border-t bg-background/70">
-      <div className="container mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <footer className="border-t bg-background/80">
+      <div className="max-w-7xl mx-auto px-2 py-4">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           {/* Brand */}
-          <div>
+          <div className="flex flex-col items-center md:items-start">
             <NavLink
               to="/"
               aria-label={`${brandConfig.brandName} Home`}
@@ -21,69 +21,59 @@ export default function Footer() {
               <img
                 src={logoSrc}
                 alt={brandConfig.brandName}
-                className="h-16 mt-1.5 w-auto"
+                className="h-14 w-auto"
               />
             </NavLink>
-            <p className="mt-3 text-sm text-muted-foreground">
-              Premium local clothing. Crafted with care.
+            <p className="mt-2 text-xs text-muted-foreground font-light">
+              Premium local clothing.
             </p>
           </div>
 
           {/* Links */}
-          <nav className="grid grid-cols-2 gap-3">
+          <nav className="flex flex-wrap gap-2 justify-center">
             <a
               href="/faq"
-              className="text-sm text-foreground/80 hover:text-foreground w-max">
+              className="text-xs text-foreground/70 hover:text-foreground">
               FAQ
             </a>
             <a
               href="/returns-policy"
-              className="text-sm text-foreground/80 hover:text-foreground w-max">
+              className="text-xs text-foreground/70 hover:text-foreground">
               Returns Policy
             </a>
             <a
               href="/terms"
-              className="text-sm text-foreground/80 hover:text-foreground w-max">
-              Terms of Service
+              className="text-xs text-foreground/70 hover:text-foreground">
+              Terms
             </a>
             <a
               href="/privacy"
-              className="text-sm text-foreground/80 hover:text-foreground w-max">
-              Privacy Policy
+              className="text-xs text-foreground/70 hover:text-foreground">
+              Privacy
             </a>
           </nav>
 
           {/* Social / Contact */}
-          <div className="flex md:justify-end items-start gap-3">
+          <div className="flex gap-2">
             <a
               href="https://www.instagram.com/rova___eg/"
               aria-label="Instagram"
-              title="Follow us on Instagram">
-              <Button
-                variant="outline"
-                size="sm"
-                data-icon="inline-start"
-                className="rounded-full">
+              title="Instagram">
+              <Button variant="outline" size="icon-sm" className="rounded-full">
                 <Instagram className="size-4" />
-                <span className="ml-1">Instagram</span>
               </Button>
             </a>
             <a
               href="https://wa.me/+201276008484"
               aria-label="WhatsApp"
-              title="Chat on WhatsApp">
-              <Button
-                variant="outline"
-                size="sm"
-                data-icon="inline-start"
-                className="rounded-full">
+              title="WhatsApp">
+              <Button variant="outline" size="icon-sm" className="rounded-full">
                 <Phone className="size-4" />
-                <span className="ml-1">WhatsApp</span>
               </Button>
             </a>
           </div>
         </div>
-        <div className="mt-8 text-xs text-muted-foreground">
+        <div className="mt-6 text-xs text-muted-foreground text-center">
           © {new Date().getFullYear()} Rova. All rights reserved.
         </div>
       </div>
