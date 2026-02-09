@@ -55,9 +55,9 @@ export function Navbar() {
         {/* Modern Navigation Links */}
         <div className="hidden md:flex items-center gap-8">
           <a
-            href="/faq"
+            href="/shop"
             className="text-base font-medium text-foreground/80 hover:text-primary transition-colors px-2 py-1 rounded-lg hover:bg-primary/10">
-            FAQ
+            Discover
           </a>
           <a
             href="/returns-policy"
