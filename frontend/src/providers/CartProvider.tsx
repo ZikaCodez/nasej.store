@@ -11,13 +11,13 @@ import type { CartContextValue, CartItem, CartState } from "@/types/cart";
 import { useAuth } from "@/providers/AuthProvider";
 import api from "@/lib/api";
 
-const CART_STORAGE_KEY = "rova_cart";
+const CART_STORAGE_KEY = "nasej_cart";
 
 const CartContext = createContext<CartContextValue | undefined>(undefined);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   // Initialize cart state from localStorage synchronously to avoid an effect
-  // race where a later persist effect could overwrite an existing `rova_cart`.
+  // race where a later persist effect could overwrite an existing `nasej_cart`.
   const [state, setState] = useState<CartState>(() => {
     try {
       const raw = localStorage.getItem(CART_STORAGE_KEY);

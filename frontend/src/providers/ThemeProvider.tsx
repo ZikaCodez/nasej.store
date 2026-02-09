@@ -8,12 +8,12 @@ type ThemeContextValue = {
   toggleTheme: () => void;
 };
 
-const THEME_STORAGE_KEY = "rova_theme";
+const THEME_STORAGE_KEY = "nasej_theme";
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("dark");
+  const [theme, setThemeState] = useState<Theme>("light");
 
   // Load initial theme from localStorage
   useEffect(() => {
@@ -22,10 +22,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       if (raw === "light" || raw === "dark") {
         setThemeState(raw);
       } else {
-        setThemeState("dark");
+        setThemeState("light");
       }
     } catch {
-      setThemeState("dark");
+      setThemeState("light");
     }
   }, []);
 
