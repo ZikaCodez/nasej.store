@@ -117,6 +117,7 @@ function validateCategoryUpdate(_req, _res, next) {
 // Product payload validators
 function validateProductCreate(req, res, next) {
   const b = req.body || {};
+  console.log(b)
   if (!b.name || typeof b.name !== "string") {
     return res.status(400).json({ error: "Product name is required" });
   }
@@ -128,7 +129,7 @@ function validateProductCreate(req, res, next) {
       .status(400)
       .json({ error: "Product basePrice must be a number" });
   }
-  if (!b.category || typeof b.category !== "string") {
+  if (!b.category || typeof b.category !== "number") {
     return res.status(400).json({ error: "Product category is required" });
   }
   if (b.variants !== undefined) {
