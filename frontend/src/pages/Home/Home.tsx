@@ -69,8 +69,8 @@ export default function Home() {
 
   // SEO + OG tags
   useEffect(() => {
-    const title = `${brandConfig.brandName} – Premium Local Clothing`;
-    const description = `Premium local clothing crafted in Egypt. Discover essentials and seasonal highlights from ${brandConfig.brandName}.`;
+    const title = `Nasej – Premium Casual Wear`;
+    const description = `Premium casual wear crafted in Egypt. Discover essentials and seasonal highlights from Nasej.`;
     const imagePath =
       theme === "dark" ? brandConfig.logoDark : brandConfig.logoLight;
     const origin = typeof window !== "undefined" ? window.location.origin : "";
@@ -224,12 +224,11 @@ export default function Home() {
           <div className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-4 py-1 text-sm font-semibold mb-8 shadow-sm">
             <span className="flex h-2 w-2 rounded-full bg-primary mr-2" />
             <AnimatedShinyText className="inline-flex items-center justify-center">
-              <span>Welcome to {brandConfig.brandName}</span>
+              <span>Welcome to Nasej</span>
             </AnimatedShinyText>
           </div>
           <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-foreground drop-shadow-lg">
-            <span className="text-primary">{brandConfig.brandName}</span> Casual
-            Wear
+            <span className="text-primary">Nasej</span> Casual Wear
           </h1>
           <p className="text-lg md:text-2xl text-muted-foreground mt-6 mb-10 max-w-2xl mx-auto">
             Discover comfort, quality, and timeless design. Crafted in Egypt for

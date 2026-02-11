@@ -165,7 +165,7 @@ export default function Orders() {
             <div className="flex flex-1 flex-col gap-2 sm:flex-row sm:justify-start">
               <Button asChild variant="outline" size="sm">
                 <a
-                  href="https://www.instagram.com/rova___eg/"
+                  href="https://www.instagram.com/nasej.store/"
                   target="_blank"
                   rel="noreferrer">
                   <Instagram className="mr-1.5 size-4" />
@@ -174,7 +174,7 @@ export default function Orders() {
               </Button>
               <Button asChild variant="outline" size="sm">
                 <a
-                  href="https://wa.me/+201276008484"
+                  href="https://wa.me/+201063081850"
                   target="_blank"
                   rel="noreferrer">
                   <PhoneCall className="mr-1.5 size-4" />
@@ -216,7 +216,7 @@ export default function Orders() {
         <div className="flex gap-2 justify-start sm:justify-end">
           <Button asChild variant="outline" size="sm">
             <a
-              href="https://www.instagram.com/rova___eg/"
+              href="https://www.instagram.com/nasej.store/"
               target="_blank"
               rel="noreferrer">
               <Instagram className="mr-1.5 size-4" />
@@ -225,7 +225,7 @@ export default function Orders() {
           </Button>
           <Button asChild variant="outline" size="sm">
             <a
-              href="https://wa.me/+201276008484"
+              href="https://wa.me/+201063081850"
               target="_blank"
               rel="noreferrer">
               <PhoneCall className="mr-1.5 size-4" />

@@ -13,11 +13,11 @@ export default function Footer() {
       <div className="max-w-5xl mx-auto flex flex-col items-center gap-6 px-6">
         <NavLink
           to="/"
-          aria-label={`${brandConfig.brandName} Home`}
+          aria-label={`Nasej Home`}
           className="flex items-center gap-3 mb-2">
           <img
             src={logoSrc}
-            alt={brandConfig.brandName}
+            alt="Nasej"
             className="h-14 w-auto drop-shadow-md rounded-xl"
           />
         </NavLink>
@@ -45,7 +45,7 @@ export default function Footer() {
         </nav>
         <div className="flex gap-3 mb-2">
           <a
-            href="https://www.instagram.com/rova___eg/"
+            href="https://www.instagram.com/nasej.store/"
             aria-label="Instagram"
             title="Instagram">
             <Button
@@ -56,7 +56,7 @@ export default function Footer() {
             </Button>
           </a>
           <a
-            href="https://wa.me/+201276008484"
+            href="https://wa.me/+201063081850"
             aria-label="WhatsApp"
             title="WhatsApp">
             <Button
@@ -68,8 +68,8 @@ export default function Footer() {
           </a>
         </div>
         <div className="text-xs text-muted-foreground text-center mt-2">
-          © {new Date().getFullYear()} {brandConfig.brandName}. Modern design.
-          All rights reserved.
+          © {new Date().getFullYear()} Nasej. Modern design. All rights
+          reserved.
         </div>
       </div>
     </footer>

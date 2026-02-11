@@ -43,11 +43,11 @@ export function Navbar() {
         {/* Brand Logo */}
         <NavLink
           to="/"
-          aria-label={`${brandConfig.brandName} Home`}
+          aria-label={`Nasej Home`}
           className="flex items-center gap-3">
           <img
             src={logoSrc}
-            alt={brandConfig.brandName}
+            alt="Nasej"
             className="h-14 w-auto drop-shadow-md rounded-xl"
           />
         </NavLink>
@@ -147,14 +147,10 @@ function MobileMenu({ logoSrc }: { logoSrc: string }) {
         <div className="px-4 pt-2">
           <NavLink
             to="/"
-            aria-label={`${brandConfig.brandName} Home`}
+            aria-label={`Nasej Home`}
             className="block py-1"
             onClick={() => setOpen(false)}>
-            <img
-              src={logoSrc}
-              alt={brandConfig.brandName}
-              className="h-16 w-auto"
-            />
+            <img src={logoSrc} alt="Nasej" className="h-16 w-auto" />
           </NavLink>
 
           {/* CTAs */}
