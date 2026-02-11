@@ -303,7 +303,7 @@ export default function Checkout() {
     if (!canPlace) return;
     setPlacing(true);
     try {
-      // Validate items against server state (ensure product & variant still available)
+      // Validate items against server state (ensure product & variant still available and stock is sufficient)
       const validatedItems = [] as typeof items;
       for (const i of items) {
         try {
@@ -313,10 +313,27 @@ export default function Checkout() {
             ? p.variants.find((v: any) => v.sku === i.sku)
             : null;
           if (!variant) {
-            // Remove from cart and inform user
             removeFromCart(i.productId, i.sku);
             toast.error(
-              `Variant ${i.sku} of product ${i.productId} is no longer available and was removed from your cart.`,
+              `${p.name || `Product ${i.productId}`} has gone out of stock, so it got removed from your cart`,
+            );
+            setPlacing(false);
+            return;
+          }
+          const stock =
+            typeof variant.stock === "number" ? variant.stock : undefined;
+          if (stock === 0) {
+            removeFromCart(i.productId, i.sku);
+            toast.error(
+              `${p.name || `Product ${i.productId}`} has gone out of stock, so it got removed from your cart`,
+            );
+            setPlacing(false);
+            return;
+          }
+          if (typeof stock === "number" && i.quantity > stock) {
+            removeFromCart(i.productId, i.sku);
+            toast.error(
+              `We removed ${i.quantity - stock} from ${p.name || `Product ${i.productId}`} due to stock level`,
             );
             setPlacing(false);
             return;
