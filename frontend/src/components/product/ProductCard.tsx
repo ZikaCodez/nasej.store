@@ -488,7 +488,7 @@ export default function ProductCard({
         {/* Stock warning display */}
         {outOfStock ? (
           <div className="mt-1">
-            <Badge variant="secondary" className="text-xs h-5 px-1.5">
+            <Badge variant="destructive" className="text-xs h-5 px-1.5">
               OUT OF STOCK
             </Badge>
           </div>
