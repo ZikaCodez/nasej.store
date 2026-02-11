@@ -5,6 +5,9 @@ export type ProductStatus = "active" | "inactive" | "archived";
 export type ProductVariantStock = {
   sku: string;
   stock: number;
+  color?: string;
+  size?: string;
+  images?: string[];
 };
 
 export type ProductListItem = {
