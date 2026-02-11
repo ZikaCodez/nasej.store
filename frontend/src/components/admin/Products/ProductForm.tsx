@@ -60,6 +60,7 @@ export default function ProductForm({
                 size: "M",
                 priceModifier: "",
                 imageUrls: [],
+                stock: "",
               },
             ],
       active: initial?.active ?? product?.isActive ?? true,
@@ -86,14 +87,23 @@ export default function ProductForm({
     !!state.meta.slug &&
     String(state.meta.slug).trim() !== "" &&
     state.meta.category !== "" &&
-    typeof state.meta.category === "number" &&
+    !isNaN(Number(state.meta.category)) &&
+    Number(state.meta.category) > 0 &&
     state.meta.basePrice !== "" &&
     allVariantsValid;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!canSubmit) return;
-    onSubmit?.(state);
+    // Ensure category is sent as a number
+    const fixedState = {
+      ...state,
+      meta: {
+        ...state.meta,
+        category: Number(state.meta.category),
+      },
+    };
+    onSubmit?.(fixedState);
   };
 
   return (

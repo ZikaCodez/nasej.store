@@ -531,12 +531,20 @@ export default function ProductsPage() {
             : Math.max(0, Number(v.stock) || 0),
       }));
 
+      // Validate category
+      const categoryNum = Number(meta.category);
+      if (!meta.category || isNaN(categoryNum) || categoryNum <= 0) {
+        toast.error("Please select a valid category.");
+        setSaving(false);
+        return;
+      }
+
       const payload = {
         name: meta.name.trim(),
         slug: meta.slug.trim(),
         description: meta.description.trim(),
         basePrice: meta.basePrice === "" ? 0 : Number(meta.basePrice) || 0,
-        category: Number(meta.category),
+        category: categoryNum,
         tags,
         variants: normalizedVariants,
         isFeatured: featured,

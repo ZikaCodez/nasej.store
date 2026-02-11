@@ -99,7 +99,7 @@ export default function VariantsEditor({
       size: "M",
       priceModifier: "",
       imageUrls: [],
-      stock: "",
+      stock: 0,
     };
     const withSku: VariantValue = {
       ...baseVariant,
