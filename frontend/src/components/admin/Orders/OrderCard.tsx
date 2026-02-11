@@ -589,14 +589,14 @@ export default function OrderCard({
                   <img
                     src={instapay}
                     alt="InstaPay"
-                    className="inline-block h-5 w-5 rounded-md object-contain bg-white mr-1"
+                    className="inline-block h-5 w-5 rounded-md object-contain bg-white"
                   />
                 )}
                 {order.paymentMethod === "VodafoneCash" && (
                   <img
                     src={vfcash}
                     alt="Vodafone Cash"
-                    className="inline-block h-5 w-5 rounded-md object-contain bg-white mr-1"
+                    className="inline-block h-5 w-5 rounded-md object-contain bg-white"
                   />
                 )}
                 {order.paymentMethod === "COD" && (
