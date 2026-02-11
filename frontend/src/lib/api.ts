@@ -60,7 +60,7 @@ api.interceptors.response.use(
     // Handle expired sessions: clear local auth and redirect with a flag
     if (status === 401 && !isSilent && typeof window !== "undefined") {
       try {
-        localStorage.removeItem("rova_auth_user");
+        localStorage.removeItem("nasej_auth_user");
       } catch {
         // ignore
       }
