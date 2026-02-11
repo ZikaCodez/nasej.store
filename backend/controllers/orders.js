@@ -277,7 +277,27 @@ async function updateOrder(id, updates) {
     set.total = subtotal + (existing.shippingFee || 0);
   }
 
-  // Made-to-order: no inventory to restore on cancellation
+  // Handle stock restock when order is cancelled or returned by admin.
+  // If orderStatus is being changed from a non-final state into a
+  // final state that should return items to inventory, restock all items.
+  const nextStatus = set.orderStatus;
+  const prevStatus = existing.orderStatus;
+  const shouldRestock =
+    nextStatus &&
+    (nextStatus === "cancelled" || nextStatus === "returned") &&
+    prevStatus !== "cancelled" &&
+    prevStatus !== "returned";
+
+  if (shouldRestock && Array.isArray(existing.items)) {
+    for (const item of existing.items) {
+      try {
+        await adjustVariantStock(item.productId, item.sku, item.quantity);
+      } catch (_) {
+        // Ignore restock errors for cancelled/returned admin operations
+      }
+    }
+  }
+
   // If there is nothing to update, return the existing document
   if (Object.keys(set).length === 0) return existing;
 
@@ -455,6 +475,18 @@ async function cancelOrderForCustomer(id, userId) {
     throw err;
   }
   const updatedAt = new Date();
+
+  // Restock all items since this order was never fulfilled.
+  if (Array.isArray(existing.items)) {
+    for (const item of existing.items) {
+      try {
+        await adjustVariantStock(item.productId, item.sku, item.quantity);
+      } catch (_) {
+        // Ignore restock errors for customer cancellations
+      }
+    }
+  }
+
   await orders.updateOne(
     { _id: id, userId },
     { $set: { orderStatus: "cancelled", updatedAt } },
