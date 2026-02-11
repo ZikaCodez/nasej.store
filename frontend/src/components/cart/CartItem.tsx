@@ -36,21 +36,26 @@ export interface CartItemProps {
   originalPrice?: number; // per unit (before discount)
   quantity?: number;
   onRemove?: () => void;
+  onIncrement?: () => void;
+  onDecrement?: () => void;
   color?: string;
   size?: string;
   discount?: Discount;
+  maxQty?: number;
 }
 
 export default function CartItem({
   productId,
   sku,
-  image = "https://via.placeholder.com/120x120?text=Rova",
+  image = "https://via.placeholder.com/120x120?text=Nasej",
   title = "Essential Tee",
   variant = "Black / L",
   price = 499,
   originalPrice,
   quantity = 1,
   onRemove,
+  onIncrement,
+  onDecrement,
   color,
   size,
   discount,
@@ -335,29 +340,8 @@ export default function CartItem({
   const stock = currentVariant?.stock ?? undefined;
   const maxQty = typeof stock === "number" && stock > 0 ? stock : 1;
 
-  useEffect(() => {
-    if (typeof stock === "number" && quantity > stock) {
-      updateItemQuantity(productId!, sku!, stock);
-      if (stock === 0) {
-        removeFromCart(productId!, sku!);
-        toast.error(
-          `${title} has gone out of stock, so it got removed from your cart`,
-        );
-      } else {
-        toast.error(
-          `We removed ${quantity - stock} from ${title} due to stock level`,
-        );
-      }
-    }
-  }, [
-    stock,
-    quantity,
-    productId,
-    sku,
-    title,
-    updateItemQuantity,
-    removeFromCart,
-  ]);
+  // Do not check for stock levels or refetch products when incrementing/decrementing
+  // Only enforce maxQty UI limit in QuantitySelector
 
   return (
     <div className="py-2">
@@ -540,14 +524,22 @@ export default function CartItem({
               onChange={(next) => {
                 if (typeof productId === "number" && typeof sku === "string") {
                   const safeQty = Math.min(next, maxQty);
-                  updateItemQuantity(productId, sku, safeQty);
-                  if (next > maxQty) {
-                    toast.error(`Only ${maxQty} left in stock for ${title}`);
+                  // Determine increment or decrement
+                  if (next > quantity) {
+                    updateItemQuantity(productId, sku, safeQty);
+                    if (typeof onIncrement === "function") onIncrement();
+                    if (next > maxQty) {
+                      toast.error(`Only ${maxQty} left in stock for ${title}`);
+                    }
+                  } else if (next < quantity) {
+                    updateItemQuantity(productId, sku, safeQty);
+                    if (typeof onDecrement === "function") onDecrement();
                   }
                 }
               }}
               max={maxQty}
               min={1}
+              disablePlus={quantity >= maxQty}
             />
           </div>
 

@@ -56,6 +56,7 @@ export default function CartDialog({
     basePrice: number;
     discount?: any;
     variants?: Array<{
+      stock: any;
       sku: string;
       price?: number;
       priceModifier?: number;
@@ -68,37 +69,38 @@ export default function CartDialog({
     Record<number, ProductInfo>
   >({});
 
-  // Fetch fresh product data from database when cart items change
-  React.useEffect(() => {
+  // Fetch product data only when dialog is opened or when clicking checkout
+  const fetchProductData = React.useCallback(async () => {
     if (cartItems.length === 0) {
       setProductDataMap({});
       return;
     }
+    const uniqueProductIds = Array.from(
+      new Set(cartItems.map((item) => item.productId)),
+    );
+    const fetchedData: Record<number, ProductInfo> = {};
+    await Promise.all(
+      uniqueProductIds.map(async (productId) => {
+        try {
+          const { data } = await api.get(`/products/${productId}`, {
+            headers: { "x-silent": "1" },
+          });
+          fetchedData[productId] = data;
+        } catch {
+          // If fetch fails, we'll fall back to cart data
+        }
+      }),
+    );
+    setProductDataMap(fetchedData);
+  }, []); // Remove cartItems from dependency, so it doesn't refetch on cart changes
 
-    const fetchProductData = async () => {
-      const uniqueProductIds = Array.from(
-        new Set(cartItems.map((item) => item.productId)),
-      );
-
-      const fetchedData: Record<number, ProductInfo> = {};
-      await Promise.all(
-        uniqueProductIds.map(async (productId) => {
-          try {
-            const { data } = await api.get(`/products/${productId}`, {
-              headers: { "x-silent": "1" },
-            });
-            fetchedData[productId] = data;
-          } catch {
-            // If fetch fails, we'll fall back to cart data
-          }
-        }),
-      );
-
-      setProductDataMap(fetchedData);
-    };
-
-    fetchProductData();
-  }, [cartItems]);
+  // Fetch product data when dialog is opened
+  React.useEffect(() => {
+    if (open) {
+      fetchProductData();
+    }
+    // Only run when dialog open state changes
+  }, [open]);
 
   React.useEffect(() => {
     if (!open) return;
@@ -108,7 +110,6 @@ export default function CartDialog({
     if (isLoggedIn && typeof validateLocalCart === "function") {
       validateLocalCart().catch(() => {});
     } else if (!isLoggedIn && typeof refreshCart === "function") {
-      // refresh latest cart from server when dialog opens (guest path)
       refreshCart().catch(() => {});
     }
 
@@ -159,9 +160,8 @@ export default function CartDialog({
         }
       })();
     }
-    // Only run when `open` changes or auth/remove handlers change — avoid re-running when cartItems updates
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, refreshCart, isLoggedIn, removeFromCart, validateLocalCart]);
+    // Only run when dialog open state changes
+  }, [open]);
 
   const currentItems: Array<CartItemType | CartItemProps> =
     (items as CartItemProps[] | undefined) ?? cartItems;
@@ -283,36 +283,49 @@ export default function CartDialog({
 
                     const hasDiscount = discountedPrice < basePrice;
 
-                    const mapped: CartItemProps = {
-                      productId,
-                      sku,
-                      image: (item as any).image,
-                      title: productName,
-                      variant: undefined,
-                      price: discountedPrice,
-                      originalPrice: hasDiscount ? basePrice : undefined,
-                      quantity: (item as any).quantity,
-                      color: (item as any).color,
-                      size: (item as any).size,
-                      discount: hasDiscount
-                        ? {
-                            type: freshProduct?.discount?.type ?? "percentage",
-                            value:
-                              freshProduct?.discount?.value ??
-                              Math.round(
-                                ((basePrice - discountedPrice) / basePrice) *
-                                  100 || 0,
-                              ),
-                            isActive: true,
-                          }
-                        : undefined,
-                      onRemove: () => {
-                        if (typeof productId === "number" && sku) {
-                          removeFromCart(productId, sku);
+                    // Find maxQty from variant stock
+                    let maxQty = 99;
+                    if (freshProduct) {
+                      const variant = freshProduct.variants?.find(
+                        (v) => v.sku === sku,
+                      );
+                      if (variant && typeof variant.stock === "number") {
+                        maxQty = variant.stock > 0 ? variant.stock : 1;
+                      }
+                    }
+                    return (
+                      <CartItem
+                        key={idx}
+                        productId={productId}
+                        sku={sku}
+                        image={(item as any).image}
+                        title={productName}
+                        variant={undefined}
+                        price={discountedPrice}
+                        originalPrice={hasDiscount ? basePrice : undefined}
+                        quantity={(item as any).quantity}
+                        color={(item as any).color}
+                        size={(item as any).size}
+                        discount={
+                          hasDiscount
+                            ? {
+                                type:
+                                  freshProduct?.discount?.type ?? "percentage",
+                                value:
+                                  freshProduct?.discount?.value ??
+                                  Math.round(
+                                    ((basePrice - discountedPrice) /
+                                      basePrice) *
+                                      100 || 0,
+                                  ),
+                                isActive: true,
+                              }
+                            : undefined
                         }
-                      },
-                    };
-                    return <CartItem key={idx} {...mapped} />;
+                        maxQty={maxQty}
+                        onRemove={() => removeFromCart(productId, sku)}
+                      />
+                    );
                   })}
                 </div>
               </ScrollArea>
@@ -367,7 +380,32 @@ export default function CartDialog({
                     size="sm"
                     className="rounded-full w-full"
                     disabled={currentItems.length === 0}
-                    onClick={() => {
+                    onClick={async () => {
+                      await fetchProductData(); // Only fetch here and when dialog opens
+                      let invalid = false;
+                      for (const item of cartItems) {
+                        const productId = item.productId;
+                        const sku = item.sku;
+                        const freshProduct = productDataMap[productId];
+                        if (!freshProduct) continue;
+                        const variant = freshProduct.variants?.find(
+                          (v) => v.sku === sku,
+                        );
+                        const stock = variant?.stock ?? 0;
+                        if (
+                          typeof stock === "number" &&
+                          item.quantity > stock
+                        ) {
+                          invalid = true;
+                          break;
+                        }
+                      }
+                      if (invalid) {
+                        toast.error(
+                          "One or more items exceed available stock. Please review your cart.",
+                        );
+                        return;
+                      }
                       setOpen(false);
                       if (isLoggedIn) {
                         navigate("/checkout");

@@ -43,7 +43,7 @@ export interface ProductCardProps {
 export default function ProductCard({
   title = "Essential Tee",
   price = 499,
-  image = "https://via.placeholder.com/600x800?text=Rova",
+  image = "https://via.placeholder.com/600x800?text=Nasej",
   categoryId,
   onQuickAdd,
   productId,
