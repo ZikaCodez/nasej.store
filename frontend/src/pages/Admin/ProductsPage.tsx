@@ -353,6 +353,10 @@ export default function ProductsPage() {
                 imageUrls: Array.isArray(v.images)
                   ? v.images
                   : v.imageUrls || [],
+                stock:
+                  typeof v.stock === "number" && !Number.isNaN(v.stock)
+                    ? v.stock
+                    : "",
               }))
             : [],
           active: p.isActive !== undefined ? !!p.isActive : true,
@@ -521,6 +525,10 @@ export default function ProductsPage() {
             ? Number(meta.basePrice) || 0
             : Number(v.priceModifier) || Number(meta.basePrice) || 0,
         images: Array.isArray(v.imageUrls) ? v.imageUrls : [],
+        stock:
+          v.stock === "" || v.stock === undefined
+            ? 0
+            : Math.max(0, Number(v.stock) || 0),
       }));
 
       const payload = {

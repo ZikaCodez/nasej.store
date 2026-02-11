@@ -22,6 +22,7 @@ export type VariantValue = {
   size: string;
   priceModifier: number | "";
   imageUrls: string[];
+  stock: number | "";
 };
 
 export type VariantsEditorProps = {
@@ -98,6 +99,7 @@ export default function VariantsEditor({
       size: "M",
       priceModifier: "",
       imageUrls: [],
+      stock: "",
     };
     const withSku: VariantValue = {
       ...baseVariant,
@@ -219,7 +221,7 @@ export default function VariantsEditor({
           return (
             <div
               key={variant.id}
-              className="relative grid grid-cols-1 gap-2 rounded-2xl border bg-muted/30 p-3 sm:grid-cols-[2fr,1.5fr,1fr,1fr]">
+              className="relative grid grid-cols-1 gap-2 rounded-2xl border bg-muted/30 p-3 sm:grid-cols-[2fr,1.5fr,1fr,1fr,1fr]">
               {/* Delete button at top-right, hidden if only one variant */}
               {variants.length > 1 && (
                 <div className="absolute right-2 top-2">
@@ -319,8 +321,24 @@ export default function VariantsEditor({
                   placeholder="0"
                 />
               </Field>
+              <Field>
+                <FieldLabel>Stock</FieldLabel>
+                <Input
+                  type="number"
+                  min={0}
+                  disabled={disabled}
+                  value={variant.stock === "" ? "" : String(variant.stock)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    handleChange(variant.id, {
+                      stock: value === "" ? "" : Math.max(0, Number(value)),
+                    });
+                  }}
+                  placeholder="0"
+                />
+              </Field>
               {/* Delete button moved to top-right; column removed */}
-              <div className="col-span-1 md:col-span-5">
+              <div className="col-span-1 md:col-span-6">
                 <Field>
                   <FieldLabel>Images {REQUIRED_STAR}</FieldLabel>
                   <ProductImages
