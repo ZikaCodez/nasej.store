@@ -10,13 +10,21 @@ async function createProduct(payload) {
   const now = new Date();
   const _id = await ensureId(COLLECTION, payload._id);
 
+  // Validate category
+  const categoryNum = Number(payload.category);
+  if (!payload.category || isNaN(categoryNum) || categoryNum <= 0) {
+    const err = new Error("Product category is required");
+    err.statusCode = 400;
+    throw err;
+  }
+
   const doc = {
     _id,
     name: payload.name,
     slug: payload.slug,
     description: payload.description,
     basePrice: payload.basePrice,
-    category: Number(payload.category), // Ensure category is stored as number
+    category: categoryNum,
     tags: Array.isArray(payload.tags) ? payload.tags : [],
     variants: Array.isArray(payload.variants)
       ? payload.variants.map((v) => ({
@@ -54,7 +62,8 @@ async function adjustVariantStock(productId, sku, quantityChange) {
   const db = await connectDB();
   const products = db.collection(COLLECTION);
 
-  if (!Number.isInteger(productId)) throw new Error("productId must be integer");
+  if (!Number.isInteger(productId))
+    throw new Error("productId must be integer");
   if (!sku || typeof sku !== "string") throw new Error("sku is required");
   if (!Number.isInteger(quantityChange)) {
     throw new Error("quantityChange must be an integer");
@@ -210,5 +219,5 @@ module.exports = {
   listProducts,
   updateProduct,
   deleteProduct,
-   adjustVariantStock,
+  adjustVariantStock,
 };
