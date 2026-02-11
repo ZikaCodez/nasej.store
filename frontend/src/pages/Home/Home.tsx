@@ -199,7 +199,7 @@ export default function Home() {
         sku: firstSku,
         title: p.name,
         price,
-        image: firstImage || "https://via.placeholder.com/600x800?text=Rova",
+        image: firstImage || "https://via.placeholder.com/600x800?text=Nasej",
         categoryId: p.category,
         variants: p.variants,
         basePrice: p.basePrice,
@@ -228,7 +228,8 @@ export default function Home() {
             </AnimatedShinyText>
           </div>
           <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-foreground drop-shadow-lg">
-            <span className="text-primary">{brandConfig.brandName}</span> Casual Wear
+            <span className="text-primary">{brandConfig.brandName}</span> Casual
+            Wear
           </h1>
           <p className="text-lg md:text-2xl text-muted-foreground mt-6 mb-10 max-w-2xl mx-auto">
             Discover comfort, quality, and timeless design. Crafted in Egypt for
@@ -445,7 +446,7 @@ export default function Home() {
                             price={price}
                             image={
                               firstImage ||
-                              "https://via.placeholder.com/600x800?text=Rova"
+                              "https://via.placeholder.com/600x800?text=Nasej"
                             }
                             categoryId={p.category}
                             variants={p.variants}
@@ -486,7 +487,7 @@ export default function Home() {
                         price={price}
                         image={
                           firstImage ||
-                          "https://via.placeholder.com/600x800?text=Rova"
+                          "https://via.placeholder.com/600x800?text=Nasej"
                         }
                         categoryId={p.category}
                         variants={p.variants}
@@ -519,7 +520,7 @@ export default function Home() {
                   name: p.name,
                   image:
                     firstImage ||
-                    "https://via.placeholder.com/600x800?text=Rova",
+                    "https://via.placeholder.com/600x800?text=Nasej",
                   category: p.category,
                   offers: {
                     "@type": "Offer",

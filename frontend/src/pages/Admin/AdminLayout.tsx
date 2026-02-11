@@ -62,7 +62,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         <div>
           <h1 className="text-lg font-semibold">Dashboard</h1>
           <p className="text-xs text-muted-foreground">
-            Rova Management Portal
+            Nasej Management Portal
           </p>
         </div>
       </div>

@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { AuthContextValue, AuthState, AuthUser } from "@/types/auth";
 import api from "@/lib/api";
 
-const AUTH_STORAGE_KEY = "rova_auth_user";
+const AUTH_STORAGE_KEY = "nasej_auth_user";
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
@@ -31,10 +31,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               const needsProfile =
                 !user.phone || !user.addresses || user.addresses.length === 0;
               const redirected = sessionStorage.getItem(
-                "rova_profile_redirected",
+                "nasej_profile_redirected",
               );
               if (needsProfile && !redirected) {
-                sessionStorage.setItem("rova_profile_redirected", "1");
+                sessionStorage.setItem("nasej_profile_redirected", "1");
                 // Avoid interfering with OAuth callback immediate navigation
                 setTimeout(() => {
                   if (window.location.pathname !== "/complete-register") {

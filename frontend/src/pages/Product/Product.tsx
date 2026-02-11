@@ -264,10 +264,10 @@ export default function Product() {
   // Dynamic SEO + OG for product page
   useEffect(() => {
     if (!product) return;
-    const title = `${product.name} – Rova`;
+    const title = `${product.name} – Nasej`;
     const description =
       product.description ||
-      "Premium local clothing from Rova. Discover fit, fabric, and finish you'll love.";
+      "Premium local clothing from Nasej. Discover fit, fabric, and finish you'll love.";
     const fallbackImage = product.variants?.[0]?.images?.[0] || "/logo.png";
     const origin = typeof window !== "undefined" ? window.location.origin : "";
     const image = (currentImage || fallbackImage).startsWith("http")
@@ -496,7 +496,7 @@ export default function Product() {
                   src={
                     currentImage ||
                     product.variants?.[0]?.images?.[0] ||
-                    "https://via.placeholder.com/600x800?text=Rova"
+                    "https://via.placeholder.com/600x800?text=Nasej"
                   }
                   alt={product.name}
                   className="h-full w-full object-cover border rounded-2xl"
@@ -689,7 +689,7 @@ export default function Product() {
                   title={p.name}
                   price={price}
                   image={
-                    image || "https://via.placeholder.com/600x800?text=Rova"
+                    image || "https://via.placeholder.com/600x800?text=Nasej"
                   }
                   categoryId={p.category}
                   variants={p.variants}
