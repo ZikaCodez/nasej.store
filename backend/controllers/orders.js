@@ -497,7 +497,19 @@ async function cancelOrderForCustomer(id, userId) {
 async function deleteOrder(id) {
   const db = await connectDB();
   const orders = db.collection(ORDERS);
+  const products = db.collection(PRODUCTS);
   if (!Number.isInteger(id)) throw new Error("id must be integer");
+  // Fetch existing order to restock items
+  const existing = await orders.findOne({ _id: id });
+  if (!existing) throw new Error("Order not found");
+  // Restock all items
+  for (const item of existing.items || []) {
+    try {
+      await adjustVariantStock(item.productId, item.sku, item.quantity);
+    } catch (_) {
+      // Ignore restock errors
+    }
+  }
   const res = await orders.deleteOne({ _id: id });
   if (res.deletedCount === 0) throw new Error("Order not found");
   return { deleted: true };
