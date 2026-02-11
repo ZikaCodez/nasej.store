@@ -40,6 +40,7 @@ type Variant = {
   color?: string;
   size?: string;
   discount?: Discount;
+  stock?: number;
 };
 
 type Product = {
@@ -357,6 +358,12 @@ export default function Product() {
     });
   };
 
+  // Stock display logic
+  const currentVariant = product?.variants?.[selectedIdx];
+  const stock = currentVariant?.stock ?? undefined;
+  const outOfStock = stock === 0;
+  const lowStock = typeof stock === "number" && stock > 0 && stock <= 5;
+
   if (loading) {
     return (
       <div className="space-y-4">
@@ -585,14 +592,32 @@ export default function Product() {
             })}
           </div>
 
+          {/* Stock warning display */}
+          {outOfStock ? (
+            <div className="mt-2">
+              <Badge variant="secondary" className="text-xs h-5 px-1.5">
+                OUT OF STOCK
+              </Badge>
+            </div>
+          ) : lowStock ? (
+            <div className="mt-2">
+              <Badge variant="destructive" className="text-xs h-5 px-1.5">
+                {stock} LEFT IN STOCK
+              </Badge>
+            </div>
+          ) : null}
+
           <div className="mt-3">
             <Button
               variant="default"
               className="rounded-full w-full md:w-auto bg-linear-to-r"
               onClick={handleAdd}
-              aria-label="Add to cart">
+              aria-label="Add to cart"
+              disabled={outOfStock}>
               <ShoppingCart className="size-4" />
-              <span className="ml-2">Add to cart</span>
+              <span className="ml-2">
+                {outOfStock ? "OUT OF STOCK" : "Add to cart"}
+              </span>
             </Button>
           </div>
           {category?._id && (

@@ -24,6 +24,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import type { Discount } from "@/types/offer";
 import { getDiscountLabel, isDiscountValid } from "@/lib/discounts";
+import { toast } from "sonner";
 
 export interface CartItemProps {
   productId?: number;
@@ -73,6 +74,7 @@ export default function CartItem({
       color?: string;
       priceModifier?: number;
       images?: string[];
+      stock?: number;
     }>
   >([]);
   const [productBasePrice, setProductBasePrice] = useState<number | undefined>(
@@ -106,6 +108,7 @@ export default function CartItem({
               color?: string;
               priceModifier?: number;
               images?: string[];
+              stock?: number;
             }>;
             basePrice: number;
           }>;
@@ -123,6 +126,7 @@ export default function CartItem({
           color?: string;
           priceModifier?: number;
           images?: string[];
+          stock?: number;
         }>;
         setProductVariants(pv);
         setProductBasePrice(p?.basePrice);
@@ -326,6 +330,35 @@ export default function CartItem({
     return true;
   }
 
+  // Find current variant stock
+  const currentVariant = productVariants.find((v) => v.sku === sku);
+  const stock = currentVariant?.stock ?? undefined;
+  const maxQty = typeof stock === "number" && stock > 0 ? stock : 1;
+
+  useEffect(() => {
+    if (typeof stock === "number" && quantity > stock) {
+      updateItemQuantity(productId!, sku!, stock);
+      if (stock === 0) {
+        removeFromCart(productId!, sku!);
+        toast.error(
+          `${title} has gone out of stock, so it got removed from your cart`,
+        );
+      } else {
+        toast.error(
+          `We removed ${quantity - stock} from ${title} due to stock level`,
+        );
+      }
+    }
+  }, [
+    stock,
+    quantity,
+    productId,
+    sku,
+    title,
+    updateItemQuantity,
+    removeFromCart,
+  ]);
+
   return (
     <div className="py-2">
       <div className="grid grid-cols-[56px_1fr] md:grid-cols-[96px_1fr_auto] gap-2 md:gap-4 items-start">
@@ -506,9 +539,15 @@ export default function CartItem({
               value={quantity}
               onChange={(next) => {
                 if (typeof productId === "number" && typeof sku === "string") {
-                  updateItemQuantity(productId, sku, next);
+                  const safeQty = Math.min(next, maxQty);
+                  updateItemQuantity(productId, sku, safeQty);
+                  if (next > maxQty) {
+                    toast.error(`Only ${maxQty} left in stock for ${title}`);
+                  }
                 }
               }}
+              max={maxQty}
+              min={1}
             />
           </div>
 

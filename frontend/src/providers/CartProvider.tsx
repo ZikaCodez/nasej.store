@@ -10,6 +10,7 @@ import {
 import type { CartContextValue, CartItem, CartState } from "@/types/cart";
 import { useAuth } from "@/providers/AuthProvider";
 import api from "@/lib/api";
+import { toast } from "sonner";
 
 const CART_STORAGE_KEY = "nasej_cart";
 
@@ -272,7 +273,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     if (!isLoggedIn || !user) return;
     try {
       const serverItems = Array.isArray(user.cartItems) ? user.cartItems : [];
-
       if (serverItems.length === 0) {
         setState({ items: [] });
         try {
@@ -282,8 +282,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         }
         return;
       }
-
-      // Validate product & variant existence for each unique productId (silent)
       const uniqueIds = Array.from(
         new Set(serverItems.map((i: any) => i.productId)),
       );
@@ -300,33 +298,36 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           }
         }),
       );
-
-      const filtered = serverItems.filter((it: any) => {
+      const filtered: typeof serverItems = [];
+      for (const it of serverItems) {
         const p = productMap[String(it.productId)];
-        if (!p) return false;
-        if (!Array.isArray(p.variants) || p.variants.length === 0) return false;
-        const hasVariant = p.variants.some(
-          (v: any) => String(v.sku) === String(it.sku),
-        );
-        return Boolean(hasVariant);
-      });
-
-      // If we removed items, persist cleaned cart silently
-      if (filtered.length !== serverItems.length) {
-        try {
-          await api.patch(
-            `/users/${user._id}`,
-            { cartItems: filtered },
-            { headers: { "x-silent": "1" } },
+        if (!p || !Array.isArray(p.variants) || p.variants.length === 0)
+          continue;
+        const v = p.variants.find((v: any) => String(v.sku) === String(it.sku));
+        if (!v) continue;
+        const stock = typeof v.stock === "number" ? v.stock : undefined;
+        if (stock === 0) {
+          toast.error(
+            `${p.name} has gone out of stock, so it got removed from your cart`,
           );
-        } catch {
-          // ignore
+          continue;
+        }
+        if (typeof stock === "number" && it.quantity > stock) {
+          toast.error(
+            `We removed ${it.quantity - stock} from ${p.name} due to stock level`,
+          );
+          filtered.push({ ...it, quantity: stock });
+        } else {
+          filtered.push(it);
         }
       }
-
+      // Update local state and localStorage
       setState({ items: filtered });
+
+      // Persist merged cart to server if it differs from serverItems
+      const mergedJson = JSON.stringify(filtered || []);
       try {
-        lastSyncedRef.current = JSON.stringify(filtered || []);
+        lastSyncedRef.current = mergedJson;
       } catch {
         lastSyncedRef.current = "";
       }
@@ -341,7 +342,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     try {
       const local = state.items || [];
       if (!local || local.length === 0) return;
-
       const uniqueIds = Array.from(new Set(local.map((i: any) => i.productId)));
       const productMap: Record<string, any | null> = {};
       await Promise.all(
@@ -356,38 +356,38 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           }
         }),
       );
-
-      const filtered = local.filter((it: any) => {
+      const filtered: typeof local = [];
+      for (const it of local) {
         const p = productMap[String(it.productId)];
-        if (!p) return false;
-        if (!Array.isArray(p.variants) || p.variants.length === 0) return false;
-        const hasVariant = p.variants.some(
-          (v: any) => String(v.sku) === String(it.sku),
-        );
-        return Boolean(hasVariant);
-      });
-
-      if (filtered.length !== local.length) {
-        // update local state
-        setState({ items: filtered });
-
-        // persist to server for logged-in users
-        if (isLoggedIn && user && Number.isFinite(user._id)) {
-          try {
-            await api.patch(
-              `/users/${user._id}`,
-              { cartItems: filtered },
-              { headers: { "x-silent": "1" } },
-            );
-            try {
-              lastSyncedRef.current = JSON.stringify(filtered || []);
-            } catch {
-              lastSyncedRef.current = "";
-            }
-          } catch {
-            // ignore
-          }
+        if (!p || !Array.isArray(p.variants) || p.variants.length === 0)
+          continue;
+        const v = p.variants.find((v: any) => String(v.sku) === String(it.sku));
+        if (!v) continue;
+        const stock = typeof v.stock === "number" ? v.stock : undefined;
+        if (stock === 0) {
+          toast.error(
+            `${p.name} has gone out of stock, so it got removed from your cart`,
+          );
+          continue;
         }
+        if (typeof stock === "number" && it.quantity > stock) {
+          toast.error(
+            `We removed ${it.quantity - stock} from ${p.name} due to stock level`,
+          );
+          filtered.push({ ...it, quantity: stock });
+        } else {
+          filtered.push(it);
+        }
+      }
+      // Update local state and localStorage
+      setState({ items: filtered });
+
+      // Persist merged cart to server if it differs from serverItems
+      const mergedJson = JSON.stringify(filtered || []);
+      try {
+        lastSyncedRef.current = mergedJson;
+      } catch {
+        lastSyncedRef.current = "";
       }
     } catch {
       // ignore

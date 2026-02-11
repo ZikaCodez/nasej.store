@@ -32,6 +32,7 @@ export interface ProductCardProps {
     price?: number;
     color?: string;
     size?: string;
+    stock?: number;
   }>;
   basePrice?: number;
   slug?: string;
@@ -355,6 +356,11 @@ export default function ProductCard({
     onQuickAdd?.();
   };
 
+  // Stock display logic
+  const stock = currentVariant?.stock ?? undefined;
+  const outOfStock = stock === 0;
+  const lowStock = typeof stock === "number" && stock > 0 && stock <= 5;
+
   if (loading) {
     return (
       <div className="group relative bg-background border rounded-2xl overflow-hidden shadow-sm">
@@ -479,6 +485,20 @@ export default function ProductCard({
             )}
           </div>
         </div>
+        {/* Stock warning display */}
+        {outOfStock ? (
+          <div className="mt-1">
+            <Badge variant="secondary" className="text-xs h-5 px-1.5">
+              OUT OF STOCK
+            </Badge>
+          </div>
+        ) : lowStock ? (
+          <div className="mt-1">
+            <Badge variant="destructive" className="text-xs h-5 px-1.5">
+              {stock} LEFT IN STOCK
+            </Badge>
+          </div>
+        ) : null}
         {/* Variant selectors */}
         {Array.isArray(variants) && variants.length > 0 && (
           <div className="mt-2 space-y-2">
@@ -587,9 +607,12 @@ export default function ProductCard({
             size="sm"
             className="rounded-full w-full"
             onClick={handleQuickAdd}
-            aria-label="Quick Add">
+            aria-label="Quick Add"
+            disabled={outOfStock}>
             <ShoppingCart className="size-4" />
-            <span className="ml-1">Add to cart</span>
+            <span className="ml-1">
+              {outOfStock ? "OUT OF STOCK" : "Add to cart"}
+            </span>
           </Button>
         </div>
       </div>
