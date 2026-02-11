@@ -5,6 +5,7 @@ export interface QuantitySelectorProps {
   min?: number;
   max?: number;
   onChange?: (next: number) => void;
+  disablePlus?: boolean;
 }
 
 export default function QuantitySelector({
@@ -12,6 +13,7 @@ export default function QuantitySelector({
   min = 1,
   max = 99,
   onChange,
+  disablePlus = false,
 }: QuantitySelectorProps) {
   const decrement = () => {
     const next = Math.max(min, value - 1);
@@ -28,7 +30,8 @@ export default function QuantitySelector({
         variant="secondary"
         size="icon-sm"
         aria-label="Decrease"
-        onClick={decrement}>
+        onClick={decrement}
+        disabled={value <= min}>
         −
       </Button>
       <span className="w-8 text-center text-sm">{value}</span>
@@ -36,7 +39,8 @@ export default function QuantitySelector({
         variant="secondary"
         size="icon-sm"
         aria-label="Increase"
-        onClick={increment}>
+        onClick={increment}
+        disabled={disablePlus}>
         +
       </Button>
     </div>
