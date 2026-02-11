@@ -67,7 +67,16 @@ export default function ProductStock({
           variants.length > 0 ? (
             <div className="space-y-2">
               {variants.map((variant, idx) => (
-                <VariantStock key={variant.sku || idx} variant={variant} />
+                <VariantStock
+                  key={variant.sku || idx}
+                  variant={variant}
+                  productName={productData?.name}
+                  productThumbnail={
+                    Array.isArray(variant.images) && variant.images.length > 0
+                      ? variant.images[0]
+                      : undefined
+                  }
+                />
               ))}
             </div>
           ) : (
