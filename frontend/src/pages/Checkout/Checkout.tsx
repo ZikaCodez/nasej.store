@@ -29,6 +29,7 @@ import {
 import type { IPromoCode } from "@/types/promo";
 
 import instapay from "@/assets/instapay.png";
+import vfcash from "@/assets/vfcash.png";
 
 export default function Checkout() {
   const { user, isLoggedIn, login } = useAuth();
@@ -49,7 +50,9 @@ export default function Checkout() {
   const [usingNew, setUsingNew] = useState(false);
   const [placing, setPlacing] = useState(false);
   const [savingAddress, setSavingAddress] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<"COD" | "InstaPay">("COD");
+  const [paymentMethod, setPaymentMethod] = useState<
+    "COD" | "InstaPay" | "VodafoneCash"
+  >("COD");
 
   // Promo Code States
   const [promoInput, setPromoInput] = useState("");
@@ -674,6 +677,24 @@ export default function Checkout() {
                   <div className="text-xs text-muted-foreground">
                     Place your order now, then send a transfer and confirm with
                     us.
+                  </div>
+                </div>
+              </button>
+              <button
+                type="button"
+                onClick={() => setPaymentMethod("VodafoneCash")}
+                className={`flex w-full items-center gap-3 rounded-2xl border p-3 text-left text-sm transition hover:bg-accent/40 ${paymentMethod === "VodafoneCash" ? "ring-2 ring-foreground" : "ring-0"}`}>
+                <img
+                  src={vfcash}
+                  alt="Vodafone Cash"
+                  className="h-8 w-8 rounded-md object-contain bg-white"
+                  loading="lazy"
+                />
+                <div className="flex-1">
+                  <div className="font-medium">Vodafone Cash transfer</div>
+                  <div className="text-xs text-muted-foreground">
+                    Place your order now, then send a Vodafone Cash transfer and
+                    confirm with us.
                   </div>
                 </div>
               </button>

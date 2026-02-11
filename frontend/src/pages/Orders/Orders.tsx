@@ -32,6 +32,7 @@ import {
 import { Banknote } from "lucide-react";
 
 import instapay from "@/assets/instapay.png";
+import vfcash from "@/assets/vfcash.png";
 
 type ListResponse<T> = {
   items: T[];
@@ -131,6 +132,24 @@ export default function Orders() {
                     Your order is placed. Please send your InstaPay transfer and
                     then contact us using the Instagram or WhatsApp buttons at
                     the top of this page so we can confirm your payment.
+                  </p>
+                </div>
+              </div>
+            )}
+            {successInfo?.paymentMethod === "VodafoneCash" && (
+              <div className="flex items-start gap-3">
+                <img
+                  src={vfcash}
+                  alt="Vodafone Cash"
+                  className="mt-0.5 h-9 w-9 rounded-md object-contain bg-white"
+                />
+                <div>
+                  <div className="font-medium">Vodafone Cash transfer</div>
+                  <p className="text-sm text-muted-foreground">
+                    Your order is placed. Please send your Vodafone Cash
+                    transfer and then contact us using the Instagram or WhatsApp
+                    buttons at the top of this page so we can confirm your
+                    payment.
                   </p>
                 </div>
               </div>

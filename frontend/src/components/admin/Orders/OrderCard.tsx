@@ -36,6 +36,7 @@ import {
   Trash,
 } from "lucide-react";
 import instapay from "@/assets/instapay.png";
+import vfcash from "@/assets/vfcash.png";
 
 export interface OrderCardProps {
   order: Order;
@@ -91,6 +92,8 @@ function paymentMethodLabel(method: Order["paymentMethod"]) {
       return "Cash on Delivery";
     case "InstaPay":
       return "InstaPay";
+    case "VodafoneCash":
+      return "Vodafone Cash";
     default:
       return method as string;
   }
@@ -582,6 +585,13 @@ export default function OrderCard({
                   <img
                     src={instapay}
                     alt="InstaPay"
+                    className="inline-block h-5 w-5 rounded-md object-contain bg-white mr-1"
+                  />
+                )}
+                {order.paymentMethod === "VodafoneCash" && (
+                  <img
+                    src={vfcash}
+                    alt="Vodafone Cash"
                     className="inline-block h-5 w-5 rounded-md object-contain bg-white mr-1"
                   />
                 )}
