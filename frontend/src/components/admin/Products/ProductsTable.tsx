@@ -43,6 +43,7 @@ import { NavLink } from "react-router-dom";
 import type { Category } from "@/types/category";
 import { Badge } from "@/components/ui/badge";
 import { getDiscountLabel, isDiscountValid } from "@/lib/discounts";
+import ProductStock from "./ProductStock";
 
 export type ProductsTableProps = {
   products: ProductListItem[];
@@ -75,6 +76,7 @@ export default function ProductsTable({
   const [pendingDelete, setPendingDelete] = useState<ProductListItem | null>(
     null,
   );
+  const [stockDialogOpen, setStockDialogOpen] = useState<number | null>(null);
   const { user } = useAuth();
   const hasSales = products.some((p) => isDiscountValid(p.discount));
 
@@ -138,6 +140,7 @@ export default function ProductsTable({
             <TableHead>Name</TableHead>
             <TableHead className="text-center">Category</TableHead>
             <TableHead className="text-center">Base price (EGP)</TableHead>
+            <TableHead className="text-center">Stock</TableHead>
             {hasSales && <TableHead className="text-center">Sales</TableHead>}
             <TableHead className="text-center">Status</TableHead>
             <TableHead className="text-center">Updated</TableHead>
@@ -194,6 +197,21 @@ export default function ProductsTable({
                 </TableCell>
                 <TableCell className="text-center">
                   {product.basePrice.toLocaleString("en-EG")}
+                </TableCell>
+                <TableCell className="text-center">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setStockDialogOpen(product._id)}>
+                    View stock
+                  </Button>
+                  {stockDialogOpen === product._id && (
+                    <ProductStock
+                      product={product}
+                      open={true}
+                      onClose={() => setStockDialogOpen(null)}
+                    />
+                  )}
                 </TableCell>
                 {hasSales && (
                   <TableCell className="text-center">
