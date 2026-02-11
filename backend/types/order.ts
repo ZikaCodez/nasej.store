@@ -14,7 +14,7 @@ export interface IOrder {
   userId: number;
   items: IOrderItem[];
   shippingAddress: IAddress;
-  paymentMethod: "COD" | "InstaPay";
+  paymentMethod: "COD" | "InstaPay" | "VodafoneCash";
   paymentStatus: "pending" | "paid" | "failed";
   orderStatus:
     | "processing" // Customer placed order, still editable

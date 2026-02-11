@@ -29,7 +29,7 @@ export type Order = {
   userId: number;
   items: OrderItem[];
   shippingAddress: Address;
-  paymentMethod: "COD" | "InstaPay";
+  paymentMethod: "COD" | "InstaPay" | "VodafoneCash";
   paymentStatus: PaymentStatus;
   orderStatus: OrderStatus;
   subtotal: number;
