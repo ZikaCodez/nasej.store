@@ -18,7 +18,21 @@ async function createProduct(payload) {
     basePrice: payload.basePrice,
     category: Number(payload.category), // Ensure category is stored as number
     tags: Array.isArray(payload.tags) ? payload.tags : [],
-    variants: Array.isArray(payload.variants) ? payload.variants : [],
+    variants: Array.isArray(payload.variants)
+      ? payload.variants.map((v) => ({
+          ...v,
+          // Normalize numeric fields
+          priceModifier:
+            v.priceModifier === undefined || v.priceModifier === null
+              ? 0
+              : Number(v.priceModifier),
+          // Stock defaults to 0 if not provided
+          stock:
+            v.stock === undefined || v.stock === null
+              ? 0
+              : Math.max(0, Number(v.stock)),
+        }))
+      : [],
     isFeatured: !!payload.isFeatured,
     isActive: payload.isActive !== undefined ? !!payload.isActive : true,
     createdAt: payload.createdAt || now,
@@ -27,6 +41,69 @@ async function createProduct(payload) {
 
   await products.insertOne(doc);
   return doc;
+}
+
+/**
+ * Adjust the stock of a specific product variant.
+ *
+ * quantityChange can be positive (restock) or negative (reserve stock).
+ * Throws an error if the variant does not exist or if the change would
+ * make stock negative.
+ */
+async function adjustVariantStock(productId, sku, quantityChange) {
+  const db = await connectDB();
+  const products = db.collection(COLLECTION);
+
+  if (!Number.isInteger(productId)) throw new Error("productId must be integer");
+  if (!sku || typeof sku !== "string") throw new Error("sku is required");
+  if (!Number.isInteger(quantityChange)) {
+    throw new Error("quantityChange must be an integer");
+  }
+
+  const product = await products.findOne({ _id: productId, isActive: true });
+  if (!product) {
+    const err = new Error("Product not found or inactive");
+    err.statusCode = 404;
+    err.code = 404;
+    throw err;
+  }
+
+  if (!Array.isArray(product.variants) || product.variants.length === 0) {
+    throw new Error("Product has no variants configured");
+  }
+
+  const variant = product.variants.find((v) => v.sku === sku);
+  if (!variant) {
+    const err = new Error("Variant not found for product");
+    err.statusCode = 404;
+    err.code = 404;
+    throw err;
+  }
+
+  const currentStock =
+    typeof variant.stock === "number" && !Number.isNaN(variant.stock)
+      ? variant.stock
+      : 0;
+
+  const nextStock = currentStock + quantityChange;
+  if (nextStock < 0) {
+    const err = new Error("Variant is out of stock");
+    err.statusCode = 400;
+    err.code = "OUT_OF_STOCK";
+    throw err;
+  }
+
+  await products.updateOne(
+    { _id: productId, "variants.sku": sku },
+    {
+      $set: {
+        "variants.$.stock": nextStock,
+        updatedAt: new Date(),
+      },
+    },
+  );
+
+  return { productId, sku, stock: nextStock };
 }
 
 async function getProductById(id) {
@@ -133,4 +210,5 @@ module.exports = {
   listProducts,
   updateProduct,
   deleteProduct,
+   adjustVariantStock,
 };

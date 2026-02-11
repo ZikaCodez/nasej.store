@@ -14,6 +14,7 @@ export interface IVariant {
   size: "S" | "M" | "L" | "XL" | "XXL" | "OS";
   priceModifier: number; // Added to basePrice
   images: string[]; // Color-specific photos
+  stock: number; // Available quantity for this variant
 }
 
 export interface IProduct {

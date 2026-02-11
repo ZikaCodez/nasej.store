@@ -1,5 +1,6 @@
 const { connectDB } = require("../core/db");
 const { ensureId } = require("./helpers");
+const { adjustVariantStock } = require("./products");
 
 const ORDERS = "orders";
 const PRODUCTS = "products";
@@ -43,14 +44,18 @@ async function createOrder(payload) {
     throw new Error("Order must contain at least one item");
   }
 
-  // Made-to-order: no inventory decrements or strict stock checks required
-  // Validate that the product exists and is active; trust SKU from cart
+  // Validate products & variants, build enriched items, and reserve stock per-variant
+  const enrichedItems = [];
+  const stockAdjustments = [];
   for (const item of payload.items) {
     if (!Number.isInteger(item.productId))
       throw new Error("item.productId must be integer");
-    const quantity = item.quantity || 1;
+    const quantity = Number(item.quantity || 1);
     const sku = item.sku;
     if (!sku) throw new Error("Order item requires SKU of the variant");
+    if (quantity <= 0) {
+      throw new Error("Order item quantity must be positive");
+    }
 
     const product = await products.findOne({
       _id: item.productId,
@@ -59,19 +64,18 @@ async function createOrder(payload) {
     if (!product) {
       throw new Error(`Product ${item.productId} not found or inactive`);
     }
-    if (quantity <= 0) {
-      throw new Error("Order item quantity must be positive");
-    }
-  }
 
-  // Build enriched items with snapshots (originalPrice, discount snapshot, discountApplied)
-  const enrichedItems = [];
-  for (const item of payload.items) {
-    const product = await products.findOne({ _id: item.productId });
     const variant =
       product && Array.isArray(product.variants)
         ? product.variants.find((v) => v.sku === item.sku)
         : null;
+
+    if (!variant) {
+      const err = new Error("Variant not found for product");
+      err.statusCode = 404;
+      err.code = 404;
+      throw err;
+    }
 
     const basePrice = product ? Number(product.basePrice || 0) : 0;
     const variantModifier = variant ? Number(variant.priceModifier || 0) : 0;
@@ -90,6 +94,27 @@ async function createOrder(payload) {
     const priceAtPurchase = discountApplied
       ? applyDiscountToPrice(originalPrice, discountSnapshot)
       : originalPrice;
+
+    // Reserve stock for this variant. If any item fails (e.g. out of stock),
+    // we will roll back previous reservations.
+    try {
+      await adjustVariantStock(product._id, variant.sku, -quantity);
+      stockAdjustments.push({
+        productId: product._id,
+        sku: variant.sku,
+        qty: quantity,
+      });
+    } catch (err) {
+      // Best-effort rollback of any earlier stock reservations
+      for (const adj of stockAdjustments) {
+        try {
+          await adjustVariantStock(adj.productId, adj.sku, adj.qty);
+        } catch (_) {
+          // swallow rollback errors; original error is more important
+        }
+      }
+      throw err;
+    }
 
     enrichedItems.push({
       productId: Number(item.productId),

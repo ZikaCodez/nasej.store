@@ -2,6 +2,11 @@ import type { Discount } from "./offer";
 
 export type ProductStatus = "active" | "inactive" | "archived";
 
+export type ProductVariantStock = {
+  sku: string;
+  stock: number;
+};
+
 export type ProductListItem = {
   _id: number;
   name: string;
@@ -14,4 +19,5 @@ export type ProductListItem = {
   updatedAt?: string | Date;
   thumbnail?: string | null;
   discount?: Discount;
+  variants?: ProductVariantStock[];
 };
