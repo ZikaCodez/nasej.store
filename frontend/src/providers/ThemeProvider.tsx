@@ -13,7 +13,15 @@ const THEME_STORAGE_KEY = "nasej_theme";
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("light");
+  const [theme, setThemeState] = useState<Theme>(() => {
+    try {
+      const raw = localStorage.getItem(THEME_STORAGE_KEY) as Theme | null;
+      if (raw === "light" || raw === "dark") {
+        return raw;
+      }
+    } catch {}
+    return "light";
+  });
 
   // Load initial theme from localStorage
   useEffect(() => {
