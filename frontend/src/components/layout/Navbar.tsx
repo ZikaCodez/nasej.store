@@ -6,19 +6,20 @@ import { useCart } from "@/providers/CartProvider";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import api from "@/lib/api";
-import brandConfig from "@/brand-config.json";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { useTheme } from "@/providers/ThemeProvider";
 import { useAuth } from "@/providers/AuthProvider";
 import LoginButton from "@/components/auth/LoginButton";
 import UserMenu from "@/components/auth/UserMenu";
 
+import logoDark from "@/assets/logo-dark.png";
+import logoLight from "@/assets/logo-light.png";
+
 export function Navbar() {
   const { items } = useCart();
   const { theme } = useTheme();
   const { isLoggedIn } = useAuth();
-  const logoSrc =
-    theme === "dark" ? brandConfig.logoDark : brandConfig.logoLight;
+  const logoSrc = theme === "dark" ? logoDark : logoLight;
   // Map cart items to CartDialog item props
   const drawerItems = items.map((i) => ({
     productId: i.productId,
