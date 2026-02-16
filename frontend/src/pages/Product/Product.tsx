@@ -529,7 +529,6 @@ export default function Product() {
           {/* Premium badges */}
           <div className="mt-2 flex flex-wrap gap-2">
             <Badge variant="default">100% Egyptian Cotton</Badge>
-            <Badge variant="default">Pre‑washed & Soft</Badge>
             <Badge variant="default">Ethically Made</Badge>
             <Badge variant="default">Breathable Weave</Badge>
           </div>

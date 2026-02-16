@@ -5,7 +5,7 @@ export default function ReturnsPolicy() {
   return (
     <div className="container mx-auto max-w-3xl py-10">
       <SectionHeader
-        title="Returns & Refunds Policy"
+        title="Return & Refund Policy"
         description="Everything you need to know about eligibility, conditions, and how to start a return."
         align="center"
       />

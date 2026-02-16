@@ -228,11 +228,10 @@ export default function Home() {
             </AnimatedShinyText>
           </div>
           <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-foreground drop-shadow-lg">
-            <span className="text-primary">Nasej</span> Casual Wear
+            <span className="text-primary">Nasej</span>
           </h1>
           <p className="text-lg md:text-2xl text-muted-foreground mt-6 mb-10 max-w-2xl mx-auto">
-            Discover comfort, quality, and timeless design. Crafted in Egypt for
-            your everyday essentials.
+            Everyday essentials, woven right.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button

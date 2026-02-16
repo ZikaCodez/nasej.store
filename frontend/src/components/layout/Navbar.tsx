@@ -58,12 +58,12 @@ export function Navbar() {
           <a
             href="/shop"
             className="text-base font-medium text-foreground/80 hover:text-primary transition-colors px-2 py-1 rounded-lg hover:bg-primary/10">
-            Discover
+            Shop
           </a>
           <a
             href="/returns-policy"
             className="text-base font-medium text-foreground/80 hover:text-primary transition-colors px-2 py-1 rounded-lg hover:bg-primary/10">
-            Returns Policy
+            Return Policy
           </a>
           <a
             href="/terms"

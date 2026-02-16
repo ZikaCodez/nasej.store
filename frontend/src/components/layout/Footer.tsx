@@ -11,7 +11,7 @@ export default function Footer() {
   const logoSrc =
     theme === "dark" ? logoDark : logoLight;
   return (
-    <footer className="w-full border-t border-border/40 bg-background/90 backdrop-blur-lg py-10 rounded-t-2xl mt-12 shadow-inner">
+    <footer className="w-full border-t border-border/40 bg-background/90 backdrop-blur-lg py-10 rounded-t-2xl mt-20 shadow-inner">
       <div className="max-w-5xl mx-auto flex flex-col items-center gap-6 px-6">
         <NavLink
           to="/"
@@ -32,7 +32,7 @@ export default function Footer() {
           <a
             href="/returns-policy"
             className="text-base font-medium text-foreground/70 hover:text-primary transition-colors px-2 py-1 rounded-lg hover:bg-primary/10">
-            Returns Policy
+            Return Policy
           </a>
           <a
             href="/terms"
