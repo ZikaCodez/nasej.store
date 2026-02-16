@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -39,6 +40,7 @@ export default function CreatePromoDialog({
     value: "",
     minOrderAmount: "",
     usageLimit: "",
+    oncePerCustomer: true,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -60,6 +62,7 @@ export default function CreatePromoDialog({
           ? Number(formData.usageLimit)
           : undefined,
         isActive: true,
+        oncePerCustomer: formData.oncePerCustomer,
       });
       toast.success("Promo code created successfully");
       onSuccess();
@@ -70,6 +73,7 @@ export default function CreatePromoDialog({
         value: "",
         minOrderAmount: "",
         usageLimit: "",
+        oncePerCustomer: true,
       });
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Failed to create promo code");
@@ -147,6 +151,18 @@ export default function CreatePromoDialog({
                   setFormData({ ...formData, minOrderAmount: e.target.value })
                 }
               />
+            </div>
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="oncePerCustomer"
+                checked={formData.oncePerCustomer}
+                onCheckedChange={(checked) =>
+                  setFormData({ ...formData, oncePerCustomer: !!checked })
+                }
+              />
+              <Label htmlFor="oncePerCustomer">
+                Usable only once per customer
+              </Label>
             </div>
             <div className="space-y-2">
               <Label htmlFor="limit">Total Usage Limit (Optional)</Label>

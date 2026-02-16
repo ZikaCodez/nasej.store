@@ -7,6 +7,7 @@ export interface IPromoCode {
   minOrderAmount?: number;
   usageLimit?: number;
   usageCount: number;
+  oncePerCustomer?: boolean; // If true, only one use per customer (default: true)
   startDate?: Date;
   endDate?: Date;
   createdAt: Date;

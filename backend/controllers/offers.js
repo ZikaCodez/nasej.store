@@ -24,6 +24,8 @@ async function createPromo(data) {
     minOrderAmount: data.minOrderAmount ? Number(data.minOrderAmount) : null,
     usageLimit: data.usageLimit ? Number(data.usageLimit) : null,
     usageCount: 0,
+    oncePerCustomer:
+      data.oncePerCustomer !== undefined ? !!data.oncePerCustomer : true,
     startDate: data.startDate ? new Date(data.startDate) : null,
     endDate: data.endDate ? new Date(data.endDate) : null,
     createdAt: new Date(),
@@ -52,7 +54,8 @@ async function updatePromo(id, updates) {
   return value;
 }
 
-async function getPromoByCode(code) {
+// getPromoByCode now takes userId to check oncePerCustomer
+async function getPromoByCode(code, userId) {
   const db = await connectDB();
   const promos = db.collection("promos");
   const promo = await promos.findOne({
@@ -60,15 +63,29 @@ async function getPromoByCode(code) {
     isActive: true,
   });
 
-  if (!promo) return null;
+  if (!promo) return { error: "Promo code not found or inactive" };
 
   // Check dates
   const now = new Date();
-  if (promo.startDate && now < new Date(promo.startDate)) return null;
-  if (promo.endDate && now > new Date(promo.endDate)) return null;
+  if (promo.startDate && now < new Date(promo.startDate))
+    return { error: "Promo code not started yet" };
+  if (promo.endDate && now > new Date(promo.endDate))
+    return { error: "Promo code expired" };
 
   // Check usage limit
-  if (promo.usageLimit && promo.usageCount >= promo.usageLimit) return null;
+  if (promo.usageLimit && promo.usageCount >= promo.usageLimit)
+    return { error: "Promo code usage limit reached" };
+
+  // Check oncePerCustomer
+  if (promo.oncePerCustomer) {
+    if (!userId) return { error: "User ID required for promo validation" };
+    const orders = db.collection("orders");
+    const used = await orders.findOne({
+      userId: userId,
+      promoCode: promo.code,
+    });
+    if (used) return { error: "You have already used this promo code" };
+  }
 
   return promo;
 }

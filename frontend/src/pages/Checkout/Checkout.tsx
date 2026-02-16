@@ -102,13 +102,17 @@ export default function Checkout() {
       // Load and validate the promo code from cart
       const validateStoredPromo = async () => {
         try {
-          const { data } = await api.get<IPromoCode>(
-            `/promos/validate/${promoCode}`,
-          );
-          setAppliedPromo(data);
-          setPromoInput(promoCode);
-        } catch {
-          // If promo is invalid, clear it
+          const { data } = await api.get(`/promos/validate/${promoCode}`);
+          if (data && data.error) {
+            setPromoError(data.error);
+            setAppliedPromo(null);
+            setPromoInput("");
+            setPromoCode(undefined);
+          } else {
+            setAppliedPromo(data);
+            setPromoInput(promoCode);
+          }
+        } catch (e: any) {
           setPromoCode(undefined);
           setAppliedPromo(null);
           setPromoInput("");
@@ -243,19 +247,16 @@ export default function Checkout() {
     setValidatingPromo(true);
     setPromoError(null);
     try {
-      const { data } = await api.get<IPromoCode>(
-        `/promos/validate/${promoInput.trim()}`,
-      );
-      // Extra frontend validation for minOrderAmount
-      if (data.minOrderAmount && subtotal < data.minOrderAmount) {
-        setPromoError(
-          `This promo requires a minimum order of EGP ${data.minOrderAmount}`,
-        );
-        return;
+      const { data } = await api.get(`/promos/validate/${promoInput.trim()}`);
+      if (data && data.error) {
+        setPromoError(data.error);
+        setAppliedPromo(null);
+        setPromoCode(undefined);
+      } else {
+        setAppliedPromo(data);
+        setPromoCode(promoInput.trim());
+        toast.success("Promo code applied!");
       }
-      setAppliedPromo(data);
-      setPromoCode(promoInput.trim());
-      toast.success("Promo code applied!");
     } catch (e: any) {
       setPromoError(e.response?.data?.message || "Invalid promo code");
     } finally {

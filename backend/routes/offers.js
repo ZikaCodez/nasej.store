@@ -33,9 +33,16 @@ router.delete("/promos/:id", requireEditorOrAdmin, async (req, res, next) => {
 // Public route to validate a code (used at checkout)
 router.get("/promos/validate/:code", async (req, res, next) => {
   try {
-    const promo = await offersController.getPromoByCode(req.params.code);
-    if (!promo) {
-      return res.status(404).json({ message: "Invalid or expired promo code" });
+    // Use current authorized user for oncePerCustomer validation
+    const userId = req.user && req.user._id ? req.user._id : undefined;
+    const promo = await offersController.getPromoByCode(
+      req.params.code,
+      userId,
+    );
+    if (!promo || promo.error) {
+      return res
+        .status(400)
+        .json({ message: promo?.error || "Invalid or expired promo code" });
     }
     res.json(promo);
   } catch (err) {

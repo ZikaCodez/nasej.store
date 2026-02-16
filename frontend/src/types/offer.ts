@@ -15,6 +15,9 @@ export type Discount = {
   type: "percentage" | "fixed";
   value: number;
   isActive: boolean;
+  usageLimit?: number;
+  minOrderAmount?: number;
+  oncePerCustomer?: boolean;
   startDate?: string | Date;
   endDate?: string | Date;
 };
