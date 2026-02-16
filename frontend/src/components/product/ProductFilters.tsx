@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { useColors } from "@/hooks/useColors";
 
 export interface CategoryOption {
-  _id: string | number;
+  _id: string; // slug
   name: string;
 }
 
@@ -177,29 +177,19 @@ export default function ProductFilters({
         <h5 className="text-xs font-medium text-muted-foreground">Category</h5>
         <div className="mt-2 flex flex-wrap gap-2">
           {categories.map((cat) => {
-            // Support both string and object formats
-            const id = typeof cat === "string" ? cat : cat._id;
-            let name: string | undefined = undefined;
-            if (typeof cat === "string") {
-              name = cat;
-            } else if (cat && typeof cat.name === "string") {
-              name = cat.name;
-            }
-            const selected = selectedc === String(id);
+            const slug = cat._id; // _id is now the slug
+            const name = typeof cat.name === "string" ? cat.name : "";
+            const selected = selectedc === slug;
             return (
               <Button
-                key={id}
+                key={slug}
                 variant={selected ? "default" : "outline"}
                 size="sm"
                 className={cn("rounded-full", selected && "font-semibold")}
                 onClick={() => {
-                  setSelectedc((prev) =>
-                    prev === String(id) ? null : String(id),
-                  );
+                  setSelectedc((prev) => (prev === slug ? null : slug));
                 }}>
-                {name && name !== "undefined" && name !== "null"
-                  ? name.charAt(0).toUpperCase() + name.slice(1)
-                  : ""}
+                {name ? name.charAt(0).toUpperCase() + name.slice(1) : ""}
               </Button>
             );
           })}

@@ -310,7 +310,11 @@ export default function Shop() {
   }, [filteredProducts.length]);
 
   const categoryOptions = useMemo(
-    () => categories.map((c) => c.slug),
+    () =>
+      categories.map((c) => ({
+        _id: c.slug, // use slug as _id for ProductFilters
+        name: c.name,
+      })),
     [categories],
   );
   // Reset visible items when filters/sort change
@@ -406,7 +410,11 @@ export default function Shop() {
               categories={
                 categoryOptions.length
                   ? categoryOptions
-                  : ["Men", "Women", "Accessories"]
+                  : [
+                      { _id: "men", name: "Men" },
+                      { _id: "women", name: "Women" },
+                      { _id: "accessories", name: "Accessories" },
+                    ]
               }
               sizes={sizeOptions}
               colors={colorOptions}
@@ -479,7 +487,11 @@ export default function Shop() {
                         categories={
                           categoryOptions.length
                             ? categoryOptions
-                            : ["Men", "Women", "Accessories"]
+                            : [
+                                { _id: "men", name: "Men" },
+                                { _id: "women", name: "Women" },
+                                { _id: "accessories", name: "Accessories" },
+                              ]
                         }
                         sizes={sizeOptions}
                         colors={colorOptions}
