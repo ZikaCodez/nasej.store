@@ -4,8 +4,13 @@ import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useColors } from "@/hooks/useColors";
 
+export interface CategoryOption {
+  _id: string | number;
+  name: string;
+}
+
 export interface ProductFiltersProps {
-  categories?: string[];
+  categories?: CategoryOption[];
   sizes?: string[];
   colors?: string[];
   priceMin?: number;
@@ -24,7 +29,11 @@ export interface ProductFiltersProps {
 }
 
 export default function ProductFilters({
-  categories = ["Men", "Women", "Accessories"],
+  categories = [
+    { _id: "men", name: "Men" },
+    { _id: "women", name: "Women" },
+    { _id: "accessories", name: "Accessories" },
+  ],
   sizes = ["S", "M", "L", "XL"],
   colors = ["Black", "White", "Beige"],
   priceMin = 0,
@@ -137,6 +146,15 @@ export default function ProductFilters({
     return { backgroundColor: hex, borderColor };
   }
 
+  // Ensure sizes are always in the order S, M, L, XL, then any others alphabetically
+  const sizeOrder = ["S", "M", "L", "XL"];
+  const sortedSizes = [
+    ...sizeOrder.filter((s) => sizes.map((v) => v.toUpperCase()).includes(s)),
+    ...sizes
+      .filter((s) => !sizeOrder.includes(s.toUpperCase()))
+      .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" })),
+  ];
+
   const sortedColors = [...colors].sort((a, b) =>
     a.localeCompare(b, undefined, { sensitivity: "base" }),
   );
@@ -154,25 +172,34 @@ export default function ProductFilters({
         </Button>
       </div>
 
-      {/* c (button radios) */}
+      {/* Category (button radios) */}
       <div>
         <h5 className="text-xs font-medium text-muted-foreground">Category</h5>
         <div className="mt-2 flex flex-wrap gap-2">
-          {categories.map((c) => {
-            const selected =
-              (selectedc || "").toLowerCase() === c.toLowerCase();
+          {categories.map((cat) => {
+            // Support both string and object formats
+            const id = typeof cat === "string" ? cat : cat._id;
+            let name: string | undefined = undefined;
+            if (typeof cat === "string") {
+              name = cat;
+            } else if (cat && typeof cat.name === "string") {
+              name = cat.name;
+            }
+            const selected = selectedc === String(id);
             return (
               <Button
-                key={c}
+                key={id}
                 variant={selected ? "default" : "outline"}
                 size="sm"
                 className={cn("rounded-full", selected && "font-semibold")}
                 onClick={() => {
                   setSelectedc((prev) =>
-                    (prev || "").toLowerCase() === c.toLowerCase() ? null : c,
+                    prev === String(id) ? null : String(id),
                   );
                 }}>
-                {c ? c.charAt(0).toUpperCase() + c.slice(1) : ""}
+                {name && name !== "undefined" && name !== "null"
+                  ? name.charAt(0).toUpperCase() + name.slice(1)
+                  : ""}
               </Button>
             );
           })}
@@ -183,7 +210,7 @@ export default function ProductFilters({
       <div>
         <h5 className="text-xs font-medium text-muted-foreground">Size</h5>
         <div className="mt-2 grid grid-cols-4 gap-2">
-          {sizes.map((s) => {
+          {sortedSizes.map((s) => {
             const selected = selectedSizes
               .map((v) => v.toLowerCase())
               .includes(s.toLowerCase());
