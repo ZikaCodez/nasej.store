@@ -69,7 +69,7 @@ export default function Home() {
 
   // SEO + OG tags
   useEffect(() => {
-    const title = `Nasej – Premium Casual Wear`;
+    const title = `Nasej`;
     const description = `Premium casual wear crafted in Egypt. Discover essentials and seasonal highlights from Nasej.`;
     const imagePath =
       theme === "dark" ? brandConfig.logoDark : brandConfig.logoLight;
